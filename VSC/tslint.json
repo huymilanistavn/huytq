@@ -1,0 +1,28 @@
+{
+  "extends": ["tslint-config-standard", "tslint-react", "tslint-config-prettier"],
+  "rules": {
+    "curly": [2, "multi-or-nest"],
+    "eofline": false,
+    "quotemark": [true, "single", "jsx-double"],
+    "jsx-no-lambda": false,
+    "max-line-length": false,
+    "align": false,
+    "import-name": false,
+    "no-unnecessary-semicolons": false,
+    "semicolon": false,
+    "trailing-comma": false,
+    "object-literal-shorthand": false,
+    "ter-arrow-parens": false,
+    "ter-prefer-arrow-callback": false,
+    "object-literal-key-quotes": false,
+    "prefer-array-literal": false,
+    "jsx-wrap-multiline": false,
+    "object-shorthand-properties-first": false,
+    "prefer-template": false,
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"],
+    "jsx-boolean-value": false,
+    "whitespace": [true, "check-branch", "check-operator", "check-decl", "check-type"],
+    "jsx-no-multiline-js": false,
+    "no-extra-boolean-cast": false
+  }
+}
