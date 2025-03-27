@@ -31,7 +31,7 @@ LogBox.ignoreLogs([
 ])
 
 const screenWidth = Dimensions.get('screen').width;
-
+const screenHeight = Dimensions.get('screen').height;
 
 class App extends React.Component<{
   navigation: g.NavigationStackProp,
@@ -131,6 +131,11 @@ class App extends React.Component<{
 
     }
   }, 15000);
+
+  isTV(){
+    if(screenWidth>screenHeight) return true;
+    else return false;
+  }
 
   loadLode(date: string, city: number, type: number) {
     if (type === 1) {
@@ -416,6 +421,60 @@ class App extends React.Component<{
     );
   }
 
+  _renderItemTV = ({item, index}) => {
+    return (
+      <View style={{backgroundColor:'#080247', height:266, flex:1, borderRadius:16, margin:8}}>
+      <Text style={{ marginVertical:18, color:'#FFF', fontSize:14, textAlign:'center' ,fontWeight: '700', fontFamily: 'Roboto-Bold'}}>Giao Hữu</Text>
+      <ImageBackground source={require('../../../assets/images/bg-match.png')} style={{ height: 81, justifyContent:"space-around",flexDirection:'row' }}
+        imageStyle={{ }}>
+          <FastImage
+            style={{ width: 60, height:60, alignSelf: 'center' }}
+            source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/05/France-U20.webp' }}
+            resizeMode={FastImage.resizeMode.stretch}
+          />
+          <View style={{height:60}}>
+            <View style={{backgroundColor:'#ED1B4A',borderRadius:13, width:80,height:26,justifyContent:'center'}}>
+              <Text style={{fontWeight: '800', fontFamily: 'Roboto-Bold', fontSize:13, textAlign:'center', color:'#FFF'}}>Trực tiếp</Text>
+            </View>
+            <Text style={{marginTop:14, color:'#FFBC15', fontSize:22, textAlign:'center' ,fontWeight: '900', fontFamily: 'Roboto-Bold'}}>17:00</Text>
+            <Text style={{marginTop:6, color:'#FFF', fontSize:14, textAlign:'center' ,fontWeight: '600', fontFamily: 'Roboto-Bold'}}>24/03/2025</Text>
+          </View>
+          <FastImage
+            style={{ width: 60, height:60, alignSelf: 'center' }}
+            source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/10/Mexico.webp' }}
+            resizeMode={FastImage.resizeMode.stretch}
+          />
+      </ImageBackground>
+      <View style={{flexDirection:'row',justifyContent:'space-around'}}>
+        <Text style={{flex:1, marginVertical:16, color:'#FFF', fontSize:14, textAlign:'center' ,fontWeight: '800', fontFamily: 'Roboto-Bold'}}>France U20</Text>
+        <View style={{flex:1}}/>
+        <Text style={{flex:1, marginVertical:16, color:'#FFF', fontSize:14, textAlign:'center' ,fontWeight: '800', fontFamily: 'Roboto-Bold'}}>Mexico U20</Text>
+      </View>
+      <View style={{flex:1}}/>
+      <View style={{ flexDirection:'row', justifyContent:'center', marginBottom:16}}>
+      <TouchableOpacity onPress={() => { g.sound.play('bet_click'); this.props.navigation.navigate('Livematch');}}>
+        <LinearGradient
+              colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={{width:140, height: 42, borderRadius:6, justifyContent:'center', marginRight:2 }}
+            >
+          <Text style={{color:'#FFF', fontSize:16, textAlign:'center',fontWeight: '500', fontFamily: 'Roboto-Bold'}}>Xem ngay</Text>
+        </LinearGradient>
+      </TouchableOpacity>
+      <LinearGradient
+              colors={['#3252E6', '#0024C9']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={{width:140, height: 42, borderRadius:6, justifyContent:'center', marginLeft:2 }}
+            >
+        <Text style={{color:'#FFF', fontSize:16, textAlign:'center',fontWeight: '500', fontFamily: 'Roboto-Bold'}}>Đặt cược</Text>
+      </LinearGradient>
+      </View>
+    </View>
+    );
+}
+
   render() {
     //const { trackAppStart, trackScreenView } = useMatomo();
 
@@ -454,7 +513,7 @@ class App extends React.Component<{
         >
           
           {/* content */}
-          <ScrollView contentInsetAdjustmentBehavior="automatic" showsVerticalScrollIndicator={false} style={{ backgroundColor: '#020d24' }} scrollEventThrottle={16} onScroll={(e) => { this.onScroll(e); }} bounces={false}>
+          {!this.isTV()&&<ScrollView contentInsetAdjustmentBehavior="automatic" showsVerticalScrollIndicator={false} style={{ backgroundColor: '#020d24' }} scrollEventThrottle={16} onScroll={(e) => { this.onScroll(e); }} bounces={false}>
             {/* Swiper and Top Index */}
             <View style={{ marginBottom: 15, marginTop: 15,flex:1, flexDirection:'row', justifyContent:'space-between'}}>
               <LinearGradient
@@ -710,8 +769,29 @@ class App extends React.Component<{
             
 
             
-          </ScrollView>
-          </MenuDrawer>
+          </ScrollView>}
+          
+        {this.isTV()&&
+        <View style={{width:screenWidth,height:screenHeight}}>
+          <Carousel
+            layout={'default'}
+            style={{}}
+            inactiveSlideScale={1}
+            inactiveSlideOpacity={1}
+            firstItem={1}
+            useScrollView={true}
+            data={['TẤT CẢ', 'BẮN CÁ', 'BẮN MÁY BAY']}
+            renderItem={this._renderItemTV}
+            sliderWidth={screenWidth}
+            //sliderHeight={screenWidth * 0.555}
+            itemWidth={(300)}
+            loop={true}
+            autoplay={false}
+            activeSlideAlignment={'start'}
+          />
+        </View>}
+
+        </MenuDrawer>
 
         <PopupNoMoney navigation={this.props.navigation} visible={this.state.popupMoney} close={this.handleClosePopupMoney} />
       </SafeAreaView>

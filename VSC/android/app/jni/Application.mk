@@ -1,7 +1,7 @@
 APP_STL := c++_static
 
 # Uncomment this line to compile to armeabi-v7a, your application will run faster but support less devices
-APP_ABI := arm64-v8a
+APP_ABI := all
 
 APP_CPPFLAGS := -frtti -std=c++11 -fsigned-char
 APP_LDFLAGS := -latomic
