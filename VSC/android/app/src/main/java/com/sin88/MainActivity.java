@@ -10,6 +10,8 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import org.cocos2dx.javascript.CCActivity;
+import android.view.KeyEvent;
+import com.globalkeyevent.GlobalKeyEventModule;
 
 public class MainActivity extends ReactActivity {
   public static MainActivity instance;
@@ -57,6 +59,20 @@ public class MainActivity extends ReactActivity {
     return "demoreactnative";
   }
 
+
+  @Override
+  public boolean onKeyDown(int keyCode, KeyEvent event) {
+    GlobalKeyEventModule instance = GlobalKeyEventModule.getInstance();
+    if (instance != null) instance.onKeyDownEvent(keyCode, event);
+    return super.onKeyDown(keyCode, event);
+  }
+
+  @Override
+  public boolean onKeyUp(int keyCode, KeyEvent event) {
+    GlobalKeyEventModule instance = GlobalKeyEventModule.getInstance();
+    if (instance != null) instance.onKeyUpEvent(keyCode, event);
+    return super.onKeyUp(keyCode, event);
+  }
   public static void startCCActivity()
   {
     Intent intent = new Intent(MainActivity.instance, CCActivity.class);
@@ -74,4 +90,5 @@ public class MainActivity extends ReactActivity {
     params.putString("user_fx_sound", s_user_fx_sound);
     getReactInstanceManager().getCurrentReactContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("onCloseCCGame", params);
   }
+
 }
