@@ -25,8 +25,8 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 import HomeLodeCalendarPicker from "../commons/homelodecalendarpicker";
 import MenuDrawer from 'react-native-side-drawer';
 import WithComponentHooks from "with-component-hooks";
+
 import GlobalKeyEvent from 'react-native-global-keyevent';
-import { delay } from 'redux-saga/effects';
 
 LogBox.ignoreLogs([
   "exported from 'deprecated-react-native-prop-types'.",
@@ -422,7 +422,7 @@ class App extends React.Component<{
 
   _renderItemTV = ({ item, index }) => {
     return (
-      <View style={{ backgroundColor: this.state.indexTVnode == index ? '#080247' : "#333", height: screenHeight*0.3, borderRadius: 16, margin: 8 }}>
+      <View style={{ backgroundColor: this.state.indexTVnode == index ? '#080247' : "#333", height: screenHeight*0.4, borderRadius: 16, margin: 8 }}>
         <Text style={{ marginVertical: 18, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '700', fontFamily: 'Roboto-Bold' }}>Giao Hữu</Text>
         <ImageBackground source={require('../../../assets/images/bg-match.png')} style={{ height: 81, justifyContent: "space-around", flexDirection: 'row' }}
           imageStyle={{}}>
@@ -450,7 +450,7 @@ class App extends React.Component<{
           <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>Mexico U20</Text>
         </View>
         <View style={{ flex: 1 }} />
-        <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
+        {!this.isTV()&&<View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
           <View>
             <LinearGradient
               colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
@@ -461,7 +461,7 @@ class App extends React.Component<{
               <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Xem ngay</Text>
             </LinearGradient>
           </View>
-        </View>
+        </View>}
       </View>
     );
   }
@@ -474,10 +474,10 @@ class App extends React.Component<{
         {/* Header */}
         <View>
           {this.isTV() ?
-            <View style={[styles.headerBar, { height: screenHeight*0.3, backgroundColor: '#020d24' }]}>
-              <View style={{ marginTop: 50 }}>
-                <Image source={require('../../../assets/images/logo-img.png')} style={{ alignSelf: 'center', width: 164, height: 152, resizeMode: 'stretch' }} />
-                <Image source={require('../../../assets/images/logo-text-2.png')} style={{ alignSelf: 'center', width: 500, height: 60, resizeMode: 'stretch' }} />
+            <View style={[styles.headerBar, { height: screenHeight*0.4, backgroundColor: '#020d24' }]}>
+              <View style={{ marginTop: 0 }}>
+                <Image source={require('../../../assets/images/logo-img.png')} style={{ alignSelf: 'center', width: screenWidth*0.15, height: screenWidth*0.145, resizeMode: 'stretch' }} />
+                <Image source={require('../../../assets/images/logo-text-2.png')} style={{ alignSelf: 'center', width: screenWidth*0.4, height: screenWidth*0.05, resizeMode: 'stretch' }} />
               </View>
 
             </View>
@@ -765,22 +765,22 @@ class App extends React.Component<{
           {this.isTV() &&
             <TouchableOpacity onPress={() => { alert(this._carousel.currentIndex); g.sound.play('bet_click');}} style={{ width: screenWidth, height: screenHeight, backgroundColor: '#020d24' }}>
               <Image source={require('../../../assets/images/logo-loading.png')} style={{ position: 'absolute', alignSelf: 'center', width: '60%', height: (screenWidth * 0.6) * 0.7, resizeMode: 'stretch', top: -340, right: -100 }} />
-              <View style={{ flex: 1 }} />
+              <View style={{ height:'5%' }} />
               <Text style={{ color: 'rgba(255, 187, 23, 1)', fontSize: 20, fontFamily: 'Roboto-Bold', marginLeft: 16 }}>TẤT CẢ CÁC TRẬN</Text>
               <Carousel
                 ref={(c) => { this._carousel = c; }}
                 layout={'default'}
                 style={{ paddingBottom: 100 }}
                 inactiveSlideScale={0.9}
-                inactiveSlideOpacity={0.2}
+                inactiveSlideOpacity={0.5}
                 firstItem={0}
                 useScrollView={true}
                 data={['TẤT CẢ', 'BẮN CÁ', 'BẮN MÁY BAY', '123', '345', '45657']}
                 renderItem={this._renderItemTV}
                 sliderWidth={screenWidth}
                 //sliderHeight={100}
-                itemWidth={(screenWidth/5)}
-                itemHeight={(screenWidth/5)*0.4}
+                itemWidth={(screenWidth/3.7)}
+                itemHeight={(screenWidth/3.7)*1.3}
                 loop={false}
                 autoplay={false}
                 activeSlideAlignment={'start'}
@@ -959,7 +959,7 @@ class App extends React.Component<{
                   </View>
                 </View>
               </View> */}
-              <View style={{ height: 300 }} />
+              <View style={{ height: screenHeight*0.08 }} />
             </TouchableOpacity>}
 
         </MenuDrawer>
