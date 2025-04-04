@@ -19,11 +19,11 @@ import { g } from '../../g';
 
 
 const screenWidth = Dimensions.get('screen').width;
-
+const screenHeight = Dimensions.get('screen').height;
 
 export default class Livematch extends React.Component<{
   navigation: g.NavigationStackProp,
-  user: any
+  route: any,
 }, {
   visible: boolean,
 
@@ -36,11 +36,20 @@ export default class Livematch extends React.Component<{
 
     };
   }
-
+  isTV() {
+    if (screenWidth > screenHeight) return true;
+    else return false;
+  }
 
   render() {
     return (
-      <SafeAreaView style={styles.container}>
+      this.isTV()?
+      <Video source={{ uri: this.props.route.params.data.live_stream_app_url }}   // Can be a URL or a local file.
+              ref={(ref) => {
+                this.player = ref
+              }}
+              style={styles.backgroundVideoTV} />
+      :<SafeAreaView style={styles.container}>
         {/* Header */}
         <View>
           <View style={styles.headerBar}>
@@ -67,7 +76,7 @@ export default class Livematch extends React.Component<{
         >
           <ScrollView contentInsetAdjustmentBehavior="automatic" showsVerticalScrollIndicator={false} style={{ backgroundColor: '#080247' }} scrollEventThrottle={16} bounces={true}>
             {/* content */}
-            <Video source={{ uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4' }}   // Can be a URL or a local file.
+            <Video source={{ uri: 'https://vniptv.simplecdn.lol/streams/2acee715-5193-44ac-bde6-1b4ef53003f0720p-playlist.m3u8' }}   // Can be a URL or a local file.
               ref={(ref) => {
                 this.player = ref
               }}                                      // Store reference
@@ -123,5 +132,13 @@ const styles = StyleSheet.create({
     // left: 0,
     // bottom: 0,
     // right: 0,
+  },
+  backgroundVideoTV: {
+    backgroundColor:'#000',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
   },
 })

@@ -1,4 +1,4 @@
-package com.sin88;
+package com.vsc;
 
 import android.content.Intent;
 import android.os.Bundle;

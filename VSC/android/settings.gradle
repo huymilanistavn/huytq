@@ -1,4 +1,4 @@
-rootProject.name = 'SinApp'
+rootProject.name = 'VSC'
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':libcocos2dx'
 project(':libcocos2dx').projectDir = new File(settingsDir, '../cocos2d-x/cocos/platform/android/libcocos2dx')

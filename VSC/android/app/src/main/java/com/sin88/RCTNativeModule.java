@@ -1,4 +1,4 @@
-package com.sin88;
+package com.vsc;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;

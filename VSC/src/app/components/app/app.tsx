@@ -46,7 +46,7 @@ class App extends React.Component<{
   popupMoney: boolean,
   arrTop: string[],
   topIndex: number,
-  hotMatchList: any,
+  hotMatchList: [],
   toggleMenu: boolean,
   coinJackpot: any,
   totalJackpot: number,
@@ -84,7 +84,7 @@ class App extends React.Component<{
       activeSlideHotMatch: 0,
       activeSlidePromotion: 0,
       activeSlideTopThumb: 0,
-      indexTVnode : 0,
+      indexTVnode: 0,
     };
   }
   showTutorialScroll = true;
@@ -96,18 +96,10 @@ class App extends React.Component<{
     // call refresh to check islogin connection server
     this._isMounted = true;
 
-    Platform.OS == 'android' && GlobalKeyEvent.addKeyDownListener((evt) => {
-      //alert('code:' + evt.keyCode)
-      //alert('key:' + evt)
-      if (evt.keyCode == 21 && this._carousel.currentIndex != 0) { //left
-        this._carousel.snapToPrev();
-        this.setState({indexTVnode:this._carousel.currentIndex - 1})
-      }
-      if (evt.keyCode == 22&&(this._carousel.currentIndex != 5)) { //right
-        this._carousel.snapToNext();
-        this.setState({indexTVnode:this._carousel.currentIndex + 1})
-      }
-    })
+    this.callAllMatch();
+
+
+
     //bg music sound
     //g.sound.playLoop();
 
@@ -136,223 +128,29 @@ class App extends React.Component<{
     else return false;
   }
 
-  loadLode(date: string, city: number, type: number) {
-    if (type === 1) {
-      this.lodeCitiesIndex = 0;
-      this.lodeDateSelected = date;
-      g.api.lodeGetCities(date).then(res => {
-        if (res.data.code === 200) {
-          this.setState({ lodeCities: res.data.data.rows });
-        }
-      });
-    }
-    if (type === 2 || type === 1) { // reload city
-      g.api.lodeGetResult(date, city).then(res => {
-        if (res.data.code === 200) {
-          if (res.data.data.rows?.title.includes('chưa có kết quả'))
-            this.setState({ lodeData: ['-', '-', '-', '-', '-'] });
-          else
-            this.setState({ lodeData: Array.from(res.data.data.rows?.result?.special) });
-        }
-      });
-    }
-  }
+  callAllMatch() {
+    g.api.hotmatchNews().then(res => {
+      if (res.data) {
+        //console.log(res);
+        this.setState({ hotMatchList: res.data });
 
-
-  callAPIJackpot() {
-    g.api.slotjackpot().then(res => {
-      if (res.data.status === 'OK') {
-        let sum = 0;
-        Object.entries(res.data.data || []).map(([key, value]) => {
-          sum += parseInt('' + value);
-        });
-        this.setState({ coinJackpot: res.data.data, totalJackpot: sum });
+        Platform.OS == 'android' && GlobalKeyEvent.addKeyDownListener((evt) => {
+          //alert('code:' + evt.keyCode)
+          //alert('key:' + evt)
+          if (evt.keyCode == 21 && this._carousel.currentIndex != 0) { //left
+            this._carousel.snapToPrev();
+            this.setState({ indexTVnode: this._carousel.currentIndex - 1 })
+          }
+          if (evt.keyCode == 22 && (this._carousel.currentIndex != res.data.length)) { //right
+            this._carousel.snapToNext();
+            this.setState({ indexTVnode: this._carousel.currentIndex + 1 })
+          }
+        })
       }
     });
   }
-  heroBannerClick(index: number) {
-    g.sound.play('bet_click');
-    let item = this.state.heroBanner[index];
-    if (item?.type === 'PAGE') {
-      if (item.name === 'khuyen-mai')
-        this.props.navigation.navigate('LeftMenuTrungTamThongTin', { data: 1 })
-      else if (item.name === 'the thao ao')
-        this.checkAndGoESportLobby('vsports');
-      else if (item.name === 'primier')
-        this.checkAndGoSportLobby('ksports', '');
-      else
-        Linking.openURL(Config.API_ENTRY_POINT + item?.path.substr(1));
-    }
-    if (item?.type === 'GAME') {
-      this.onClickTopAndGame('/gameUrl?partnerProvider=' + item.partner_provider + '&partnerGameId=' + item.partner_game_id);
-    }
-    if (item?.type === 'MATCH')
-      this.checkAndGoLinkSport(item.event_id, item.league_id);
-  }
 
-  checkAndGoSportLobby(str_type: string, sub_type: string) {
-    g.sound.play('bet_click');
-    g.value.canPlay = g.fn.gotoLink(this.props, true, false);
-    if (g.value.canPlay !== 'login') {
-      g.api.getRealLinkESport(str_type).then(res => {
-        if (res.data.status === 'OK') {
-          if (res.data?.data?.url) {
-            if ((str_type === 'ssports' || str_type === 'sinsports' || str_type === 'tpsports') && sub_type === 'Football')
-              g.value.currentGoToLink = res.data?.data?.url?.Football;
-            else if ((str_type === 'ssports' || str_type === 'sinsports' || str_type === 'tpsports') && sub_type === 'Basketball')
-              g.value.currentGoToLink = '' + res.data?.data?.url?.Basketball;
-            else if ((str_type === 'ssports' || str_type === 'sinsports' || str_type === 'tpsports') && sub_type === 'Volleyball')
-              g.value.currentGoToLink = res.data?.data?.url?.Volleyball;
-            else if ((str_type === 'ssports' || str_type === 'sinsports' || str_type === 'tpsports') && sub_type === 'Tennis')
-              g.value.currentGoToLink = res.data?.data?.url?.Tennis;
-            else if ((str_type === 'ssports' || str_type === 'sinsports') && sub_type === 'Boxing')
-              g.value.currentGoToLink = res.data?.data?.url?.Boxing;
-            else if ((str_type === 'ssports' || str_type === 'sinsports') && sub_type === 'Badminton')
-              g.value.currentGoToLink = res.data?.data?.url?.Badminton;
 
-            else
-              g.value.currentGoToLink = res.data?.data?.url;
-            this.props.navigation.navigate('Webview');
-          }
-          else
-            showMessage({ message: 'Chưa có dữ liệu!', type: "warning", icon: { icon: "warning", position: "left" } });
-        }
-      })
-    }
-  }
-
-  checkAndGoESportLobby(type: string) {
-    g.sound.play('bet_click');
-    g.value.canPlay = g.fn.gotoLink(this.props, true, false);
-    if (g.value.canPlay !== 'login') {
-      g.api.getRealLinkESport(type).then(res => {
-        if (res.data.status === 'OK') {
-          if (res.data?.data?.url) {
-            if (type === 'vsports')
-              g.value.currentGoToLink = res.data?.data?.url?.virtualsports;
-            else
-              g.value.currentGoToLink = res.data?.data?.url;
-            this.props.navigation.navigate('Webview');
-          }
-          else
-            showMessage({ message: 'Chưa có dữ liệu!', type: "warning", icon: { icon: "warning", position: "left" } });
-        }
-      })
-    }
-  }
-  _renderItem = ({ item, index }: { item: any, index: number }) => {
-    //console.log(item.image);
-    return (
-      <TouchableOpacity key={index} style={{ height: screenWidth * 1.4 }} onPress={() => {
-        g.sound.play('bet_click');
-        if (item.name === 'THỂ THAO') this.props.navigation.navigate('Sport');
-        if (item.name === 'LIVE CASINO') this.props.navigation.navigate('Casino');
-        if (item.name === 'GAME BÀI') this.props.navigation.navigate('GameBai');
-        if (item.name === 'LÔ ĐỀ') this.props.navigation.navigate('LoDe');
-        if (item.name === 'KENO') this.props.navigation.navigate('QuickGames', { data: 1 });
-        if (item.name === 'QUAY SỐ') this.props.navigation.navigate('QuickGames', { data: 3 });
-        if (item.name === 'NUMBERS GAME') this.props.navigation.navigate('QuickGames', { data: 2 });
-        if (item.name === 'VIRTUAL GAMES') this.props.navigation.navigate('QuickGames', { data: 5 });
-        if (item.name === 'TABLE GAMES') this.props.navigation.navigate('QuickGames', { data: 4 });
-        if (item.name === 'NỔ HŨ') this.props.navigation.navigate('CongGame', { data: 1 });
-        if (item.name === 'SLOTS') this.props.navigation.navigate('CongGame', { data: 2 });
-        if (item.name === 'INGAME') this.props.navigation.navigate('CongGame', { data: 3 });
-        if (item.name === 'SPRIBE GAMES') this.props.navigation.navigate('CongGame', { data: 4 });
-        if (item.name === 'BẮN CÁ') this.props.navigation.navigate('BanCa', { data: 1 });
-        if (item.name === 'BẮN MÁY BAY') this.props.navigation.navigate('BanCa', { data: 2 });
-        if (item.name === 'E-SPORTS') this.checkAndGoESportLobby('');
-        if (item.name === 'THỂ THAO ẢO') this.checkAndGoESportLobby('vsports');
-      }}>
-        <FastImage
-          style={{ width: screenWidth / 3 - 15, height: item.name === 'GAME BÀI' ? (screenWidth / 3 - 5) * 1.31 : (screenWidth / 3 - 15) * 1.31, marginTop: item.name === 'GAME BÀI' ? -15 : 0 }}
-          source={{ uri: item.image }}
-          resizeMode={FastImage.resizeMode.contain}
-        />
-        <Text numberOfLines={1} adjustsFontSizeToFit={true} style={{ marginLeft: -10, color: '#FFF', marginTop: -22, textAlign: 'center', fontWeight: '500', fontSize: 13, fontFamily: 'Roboto-Regular' }}>{item.name}</Text>
-      </TouchableOpacity>
-    );
-  }
-
-  _renderItemKhuyenMai = ({ item, index }: { item: any, index: number }) => {
-    return (
-      <TouchableOpacity key={index} style={{ height: screenWidth * 1.4 }} onPress={() => { g.sound.play('bet_click'); this.props.navigation.navigate('LeftMenuTrungTamThongTin', { data: 1 }) }}>
-        <FastImage
-          style={{ width: screenWidth - 80, height: (screenWidth - 80) * 0.555, borderRadius: 8, alignSelf: 'center' }}
-          source={{ uri: item.image }}
-          resizeMode={FastImage.resizeMode.contain}
-        />
-      </TouchableOpacity>
-    );
-  }
-  _renderItemSlotHot = ({ item, index }: { item: any, index: number }) => {
-    return (
-      <TouchableOpacity key={index} style={{ height: screenWidth * 1.4 }} onPress={() => {
-        this.onClickTopAndGame(item.api);
-      }}>
-
-      </TouchableOpacity>
-    );
-  }
-  _renderItemHotMatch = ({ item, index }: { item: any, index: number }) => {
-    //console.log(index);
-    //let h1 = (item?.oddsKS.length > 0 && item?.oddsKS[0]?.ft?.hdp && item?.oddsKS[0]?.ft?.hdp[0]?.hTeam[0]) || item.oddsAT[0]?.ft?.hdp[0]?.hTeam[0];
-    let h1 = item?.oddsKS.length > 0
-      ? '' || item?.oddsKS[0]?.ft?.hdp && item?.oddsKS[0]?.ft?.hdp[0]?.hTeam[0] === "" ? item?.oddsKS[0]?.ft?.hdp[0]?.aTeam[0] : item?.oddsKS[0]?.ft?.hdp[0]?.hTeam[0]
-      : item.oddsAT[0]?.ft?.hdp[0]?.hTeam[0];
-
-    let h2 = (item?.oddsKS.length > 0 && item?.oddsKS[0]?.ft?.hdp && item?.oddsKS[0]?.ft?.hdp[0]?.hTeam[1]) || item.oddsAT[0]?.ft?.hdp[0]?.hTeam[1];
-    //let a1 = (item?.oddsKS.length > 0 && item?.oddsKS[0]?.ft?.hdp && item?.oddsKS[0]?.ft?.hdp[0]?.hTeam[0] * -1) || item.oddsAT[0]?.ft?.hdp[0]?.aTeam[0];
-
-    let a1 = item?.oddsKS.length > 0
-      ? ('' || item?.oddsKS[0]?.ft?.hdp && item?.oddsKS[0]?.ft?.hdp[0]?.hTeam[0]) !== "" ? item?.oddsKS[0]?.ft?.hdp[0]?.hTeam[0] * (- 1) : item?.oddsKS[0]?.ft?.hdp[0]?.aTeam[0] * (- 1)
-      : item.oddsAT[0]?.ft?.hdp[0]?.aTeam[0];
-
-    let a2 = (item?.oddsKS.length > 0 && item?.oddsKS[0]?.ft?.hdp && item?.oddsKS[0]?.ft?.hdp[0]?.aTeam[1]) || item.oddsAT[0]?.ft?.hdp[0]?.hTeam[1];
-    return (
-      <TouchableOpacity onPress={() => { this.checkAndGoLinkSport(item.mkid, item.ckid) }}>
-
-      </TouchableOpacity>
-    );
-  }
-  //native game
-  checkAndGoNative(gameName: string, isLandscape: boolean) {
-    g.value.isNative = "true";
-    g.value.gameName = gameName;
-    g.value.isLandscape = isLandscape;
-  }
-  //using for sport
-  checkAndGoLinkSport = (event_id: number, league_id: number) => {
-    g.sound.play('bet_click');
-    g.value.canPlay = g.fn.gotoLink(this.props, true, false);
-    if (g.value.canPlay !== 'login') {
-      g.api.getRealLinkSportHome(event_id, league_id).then(res => {
-        if (res.data.status === 'OK') {
-          if (res.data?.data?.url) {
-            g.value.currentGoToLink = res.data?.data?.url;
-            this.props.navigation.navigate('Webview');
-          }
-          else {
-            showMessage({ message: 'Chưa có dữ liệu trận đấu!', type: "warning", icon: { icon: "warning", position: "left" } });
-          }
-        }
-      })
-    }
-  }
-
-  onClickTopAndGame(api: string) {
-    if (g.value.canClick) {
-      g.fn.setClick();
-      let temp = g.fn.gotoLink(this.props, true, false);
-      if (temp === 'ok') {
-        g.fn.checkAndGoLink(api, true, this.props);
-      }
-      else {
-        g.sound.play('bet_click');
-        if (temp === 'nomoney')
-          this.setState({ popupMoney: true });
-      }
-    }
-  }
   handleClosePopupMoney = () => {
     g.sound.play('bet_click');
     this.setState({ popupMoney: false })
@@ -373,84 +171,38 @@ class App extends React.Component<{
     this.offset = currentOffset;
   };
 
-  pagination(type: string) {
-    let dotsLengthTemp = 0;
-    let activeDot = 0;
-    if (type === 'slothot') {
-      dotsLengthTemp = slothot.length;
-      activeDot = this.state.activeSlide;
-    }
-    if (type === 'hotmatch') {
-      dotsLengthTemp = this.state.hotMatchList.length;
-      activeDot = this.state.activeSlideHotMatch;
-    }
-    if (type === 'promotion') {
-      dotsLengthTemp = khuyenmai.length;
-      activeDot = this.state.activeSlidePromotion;
-    }
-    if (type === 'topthumb') {
-      dotsLengthTemp = arrTopData[this.state.topIndex].length;
-      activeDot = this.state.activeSlideTopThumb;
-    }
-    //const { entries, activeSlide } = this.state;
-    return (
-      <Pagination
-        dotsLength={dotsLengthTemp}
-        activeDotIndex={activeDot}
-        containerStyle={{
-          width: 20 * dotsLengthTemp, backgroundColor: '#bdbdbd', borderRadius: 5, height: 8, paddingVertical: -12, position: 'absolute', alignSelf: 'center',
-          bottom: type === 'slothot' ? 26
-            : type === 'hotmatch' ? -20
-              : type === 'promotion' ? 20
-                : 28
-        }}
-        dotStyle={{
-          width: 20,
-          height: 8,
-          borderRadius: 5,
-          marginHorizontal: -8,
-          backgroundColor: '#4f4f4f',
-        }}
-        inactiveDotStyle={{
-          backgroundColor: '#bdbdbd', width: 20, height: 8, borderRadius: 5, marginHorizontal: -8
-        }}
-        inactiveDotOpacity={1}
-        inactiveDotScale={1}
-      />
-    );
-  }
 
   _renderItemTV = ({ item, index }) => {
     return (
-      <View style={{ backgroundColor: this.state.indexTVnode == index ? '#080247' : "#333", height: screenHeight*0.4, borderRadius: 16, margin: 8 }}>
-        <Text style={{ marginVertical: 18, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '700', fontFamily: 'Roboto-Bold' }}>Giao Hữu</Text>
+      <View style={{ backgroundColor: this.state.indexTVnode == index ? '#080247' : "#333", height: 220, borderRadius: 16, margin: 8 }}>
+        <Text style={{ marginVertical: 18, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '700', fontFamily: 'Roboto-Bold' }}>{item.league}</Text>
         <ImageBackground source={require('../../../assets/images/bg-match.png')} style={{ height: 81, justifyContent: "space-around", flexDirection: 'row' }}
           imageStyle={{}}>
           <FastImage
             style={{ width: 60, height: 60, alignSelf: 'center' }}
-            source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/05/France-U20.webp' }}
+            source={{ uri: item?.home_team.logo }}
             resizeMode={FastImage.resizeMode.stretch}
           />
           <View style={{ height: 60 }}>
-            <View style={{ backgroundColor: '#ED1B4A', borderRadius: 13, width: 80, height: 26, justifyContent: 'center' }}>
+            {item.live_stream_app_url != '' ? <View style={{ backgroundColor: '#ED1B4A', borderRadius: 13, width: 80, height: 26, justifyContent: 'center' }}>
               <Text style={{ fontWeight: '800', fontFamily: 'Roboto-Bold', fontSize: 13, textAlign: 'center', color: '#FFF' }}>Trực tiếp</Text>
-            </View>
-            <Text style={{ marginTop: 14, color: '#FFBC15', fontSize: 22, textAlign: 'center', fontWeight: '900', fontFamily: 'Roboto-Bold' }}>17:00</Text>
-            <Text style={{ marginTop: 6, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '600', fontFamily: 'Roboto-Bold' }}>24/03/2025</Text>
+            </View> : <View />}
+            <Text style={{ marginTop: 14, color: '#FFBC15', fontSize: 22, textAlign: 'center', fontWeight: '900', fontFamily: 'Roboto-Bold' }}>{item?.date_time?.time}</Text>
+            <Text style={{ marginTop: 6, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '600', fontFamily: 'Roboto-Bold' }}>{item?.date_time?.date}</Text>
           </View>
           <FastImage
             style={{ width: 60, height: 60, alignSelf: 'center' }}
-            source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/10/Mexico.webp' }}
+            source={{ uri: item?.away_team.logo }}
             resizeMode={FastImage.resizeMode.stretch}
           />
         </ImageBackground>
         <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-          <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>France U20</Text>
+          <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>{item?.home_team?.name}</Text>
           <View style={{ flex: 1 }} />
-          <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>Mexico U20</Text>
+          <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>{item?.away_team?.name}</Text>
         </View>
         <View style={{ flex: 1 }} />
-        {!this.isTV()&&<View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
+        {!this.isTV() && <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
           <View>
             <LinearGradient
               colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
@@ -474,10 +226,10 @@ class App extends React.Component<{
         {/* Header */}
         <View>
           {this.isTV() ?
-            <View style={[styles.headerBar, { height: screenHeight*0.4, backgroundColor: '#020d24' }]}>
+            <View style={[styles.headerBar, { height: screenHeight * 0.4, backgroundColor: '#020d24' }]}>
               <View style={{ marginTop: 0 }}>
-                <Image source={require('../../../assets/images/logo-img.png')} style={{ alignSelf: 'center', width: screenWidth*0.15, height: screenWidth*0.145, resizeMode: 'stretch' }} />
-                <Image source={require('../../../assets/images/logo-text-2.png')} style={{ alignSelf: 'center', width: screenWidth*0.4, height: screenWidth*0.05, resizeMode: 'stretch' }} />
+                <Image source={require('../../../assets/images/logo-img.png')} style={{ alignSelf: 'center', width: screenWidth * 0.15, height: screenWidth * 0.145, resizeMode: 'stretch' }} />
+                <Image source={require('../../../assets/images/logo-text-2.png')} style={{ alignSelf: 'center', width: screenWidth * 0.4, height: screenWidth * 0.05, resizeMode: 'stretch' }} />
               </View>
 
             </View>
@@ -763,203 +515,38 @@ class App extends React.Component<{
           </ScrollView>}
 
           {this.isTV() &&
-            <TouchableOpacity onPress={() => { alert(this._carousel.currentIndex); g.sound.play('bet_click');}} style={{ width: screenWidth, height: screenHeight, backgroundColor: '#020d24' }}>
+            <TouchableOpacity
+              onPress={() => {
+                g.sound.play('bet_click');
+                if (this.state.hotMatchList[this._carousel.currentIndex] == '')
+                  alert("CHưa có dữ liệu trận đấu!")
+                else
+                  this.props.navigation.navigate('Livematch', { data: this.state.hotMatchList[this._carousel.currentIndex] })
+              }
+              } style={{ width: screenWidth, height: screenHeight, backgroundColor: '#020d24' }}>
               <Image source={require('../../../assets/images/logo-loading.png')} style={{ position: 'absolute', alignSelf: 'center', width: '60%', height: (screenWidth * 0.6) * 0.7, resizeMode: 'stretch', top: -340, right: -100 }} />
-              <View style={{ height:'5%' }} />
+              <View style={{ height: '5%' }} />
               <Text style={{ color: 'rgba(255, 187, 23, 1)', fontSize: 20, fontFamily: 'Roboto-Bold', marginLeft: 16 }}>TẤT CẢ CÁC TRẬN</Text>
               <Carousel
                 ref={(c) => { this._carousel = c; }}
                 layout={'default'}
                 style={{ paddingBottom: 100 }}
-                inactiveSlideScale={0.9}
+                inactiveSlideScale={1}
                 inactiveSlideOpacity={0.5}
                 firstItem={0}
-                useScrollView={true}
-                data={['TẤT CẢ', 'BẮN CÁ', 'BẮN MÁY BAY', '123', '345', '45657']}
+                //useScrollView={true}
+                data={this.state.hotMatchList}
                 renderItem={this._renderItemTV}
                 sliderWidth={screenWidth}
                 //sliderHeight={100}
-                itemWidth={(screenWidth/3.7)}
-                itemHeight={(screenWidth/3.7)*1.3}
+                itemWidth={(screenWidth / 3.7)}
+                itemHeight={220}
                 loop={false}
                 autoplay={false}
                 activeSlideAlignment={'start'}
               />
-              {/* <FlatList          
-                horizontal={true}
-                data={['TẤT CẢ', 'BẮN CÁ', 'BẮN MÁY BAY', '123', '345', '45657','23432']}
-                renderItem={this._renderItemTV}
-                keyExtractor={item => item.id}
-                showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}
-              /> */}
-              {/* <View style={{ flexDirection: 'row' }}>
-                <View style={{ backgroundColor: this.state.currentTVNode == 0 ? '#080247' : "#333", height: 266, borderRadius: 16, margin: 8 }}>
-                  <Text style={{ marginVertical: 18, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '700', fontFamily: 'Roboto-Bold' }}>Giao Hữu</Text>
-                  <ImageBackground source={require('../../../assets/images/bg-match.png')} style={{ height: 81, justifyContent: "space-around", flexDirection: 'row' }}
-                    imageStyle={{}}>
-                    <FastImage
-                      style={{ width: 60, height: 60, alignSelf: 'center' }}
-                      source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/05/France-U20.webp' }}
-                      resizeMode={FastImage.resizeMode.stretch}
-                    />
-                    <View style={{ height: 60 }}>
-                      <View style={{ backgroundColor: '#ED1B4A', borderRadius: 13, width: 80, height: 26, justifyContent: 'center' }}>
-                        <Text style={{ fontWeight: '800', fontFamily: 'Roboto-Bold', fontSize: 13, textAlign: 'center', color: '#FFF' }}>Trực tiếp 1</Text>
-                      </View>
-                      <Text style={{ marginTop: 14, color: '#FFBC15', fontSize: 22, textAlign: 'center', fontWeight: '900', fontFamily: 'Roboto-Bold' }}>17:00</Text>
-                      <Text style={{ marginTop: 6, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '600', fontFamily: 'Roboto-Bold' }}>24/03/2025</Text>
-                    </View>
-                    <FastImage
-                      style={{ width: 60, height: 60, alignSelf: 'center' }}
-                      source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/10/Mexico.webp' }}
-                      resizeMode={FastImage.resizeMode.stretch}
-                    />
-                  </ImageBackground>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                    <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>France U20</Text>
-                    <View style={{ flex: 1 }} />
-                    <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>Mexico U20</Text>
-                  </View>
-                  <View style={{ flex: 1 }} />
-                  <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
-                    <View>
-                      <LinearGradient
-                        colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginRight: 2 }}
-                      >
-                        <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Xem ngay</Text>
-                      </LinearGradient>
-                    </View>
-                  </View>
-                </View>
-                <View style={{ backgroundColor: this.state.currentTVNode == 1 ? '#080247' : "#333", height: 266, borderRadius: 16, margin: 8 }}>
-                  <Text style={{ marginVertical: 18, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '700', fontFamily: 'Roboto-Bold' }}>Giao Hữu</Text>
-                  <ImageBackground source={require('../../../assets/images/bg-match.png')} style={{ height: 81, justifyContent: "space-around", flexDirection: 'row' }}
-                    imageStyle={{}}>
-                    <FastImage
-                      style={{ width: 60, height: 60, alignSelf: 'center' }}
-                      source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/05/France-U20.webp' }}
-                      resizeMode={FastImage.resizeMode.stretch}
-                    />
-                    <View style={{ height: 60 }}>
-                      <View style={{ backgroundColor: '#ED1B4A', borderRadius: 13, width: 80, height: 26, justifyContent: 'center' }}>
-                        <Text style={{ fontWeight: '800', fontFamily: 'Roboto-Bold', fontSize: 13, textAlign: 'center', color: '#FFF' }}>Trực tiếp 2</Text>
-                      </View>
-                      <Text style={{ marginTop: 14, color: '#FFBC15', fontSize: 22, textAlign: 'center', fontWeight: '900', fontFamily: 'Roboto-Bold' }}>17:00</Text>
-                      <Text style={{ marginTop: 6, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '600', fontFamily: 'Roboto-Bold' }}>24/03/2025</Text>
-                    </View>
-                    <FastImage
-                      style={{ width: 60, height: 60, alignSelf: 'center' }}
-                      source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/10/Mexico.webp' }}
-                      resizeMode={FastImage.resizeMode.stretch}
-                    />
-                  </ImageBackground>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                    <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>France U20</Text>
-                    <View style={{ flex: 1 }} />
-                    <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>Mexico U20</Text>
-                  </View>
-                  <View style={{ flex: 1 }} />
-                  <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
-                    <View>
-                      <LinearGradient
-                        colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginRight: 2 }}
-                      >
-                        <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Xem ngay</Text>
-                      </LinearGradient>
-                    </View>
-                  </View>
-                </View>
-                <View style={{ backgroundColor: this.state.currentTVNode == 2 ? '#080247' : "#333", height: 266, borderRadius: 16, margin: 8 }}>
-                  <Text style={{ marginVertical: 18, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '700', fontFamily: 'Roboto-Bold' }}>Giao Hữu</Text>
-                  <ImageBackground source={require('../../../assets/images/bg-match.png')} style={{ height: 81, justifyContent: "space-around", flexDirection: 'row' }}
-                    imageStyle={{}}>
-                    <FastImage
-                      style={{ width: 60, height: 60, alignSelf: 'center' }}
-                      source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/05/France-U20.webp' }}
-                      resizeMode={FastImage.resizeMode.stretch}
-                    />
-                    <View style={{ height: 60 }}>
-                      <View style={{ backgroundColor: '#ED1B4A', borderRadius: 13, width: 80, height: 26, justifyContent: 'center' }}>
-                        <Text style={{ fontWeight: '800', fontFamily: 'Roboto-Bold', fontSize: 13, textAlign: 'center', color: '#FFF' }}>Trực tiếp 3</Text>
-                      </View>
-                      <Text style={{ marginTop: 14, color: '#FFBC15', fontSize: 22, textAlign: 'center', fontWeight: '900', fontFamily: 'Roboto-Bold' }}>17:00</Text>
-                      <Text style={{ marginTop: 6, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '600', fontFamily: 'Roboto-Bold' }}>24/03/2025</Text>
-                    </View>
-                    <FastImage
-                      style={{ width: 60, height: 60, alignSelf: 'center' }}
-                      source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/10/Mexico.webp' }}
-                      resizeMode={FastImage.resizeMode.stretch}
-                    />
-                  </ImageBackground>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                    <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>France U20</Text>
-                    <View style={{ flex: 1 }} />
-                    <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>Mexico U20</Text>
-                  </View>
-                  <View style={{ flex: 1 }} />
-                  <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
-                    <View>
-                      <LinearGradient
-                        colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginRight: 2 }}
-                      >
-                        <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Xem ngay</Text>
-                      </LinearGradient>
-                    </View>
-                  </View>
-                </View>
-                <View style={{ backgroundColor: this.state.currentTVNode == 3 ? '#080247' : "#333", height: 266, borderRadius: 16, margin: 8 }}>
-                  <Text style={{ marginVertical: 18, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '700', fontFamily: 'Roboto-Bold' }}>Giao Hữu</Text>
-                  <ImageBackground source={require('../../../assets/images/bg-match.png')} style={{ height: 81, justifyContent: "space-around", flexDirection: 'row' }}
-                    imageStyle={{}}>
-                    <FastImage
-                      style={{ width: 60, height: 60, alignSelf: 'center' }}
-                      source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/05/France-U20.webp' }}
-                      resizeMode={FastImage.resizeMode.stretch}
-                    />
-                    <View style={{ height: 60 }}>
-                      <View style={{ backgroundColor: '#ED1B4A', borderRadius: 13, width: 80, height: 26, justifyContent: 'center' }}>
-                        <Text style={{ fontWeight: '800', fontFamily: 'Roboto-Bold', fontSize: 13, textAlign: 'center', color: '#FFF' }}>Trực tiếp 4</Text>
-                      </View>
-                      <Text style={{ marginTop: 14, color: '#FFBC15', fontSize: 22, textAlign: 'center', fontWeight: '900', fontFamily: 'Roboto-Bold' }}>17:00</Text>
-                      <Text style={{ marginTop: 6, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '600', fontFamily: 'Roboto-Bold' }}>24/03/2025</Text>
-                    </View>
-                    <FastImage
-                      style={{ width: 60, height: 60, alignSelf: 'center' }}
-                      source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/10/Mexico.webp' }}
-                      resizeMode={FastImage.resizeMode.stretch}
-                    />
-                  </ImageBackground>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                    <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>France U20</Text>
-                    <View style={{ flex: 1 }} />
-                    <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>Mexico U20</Text>
-                  </View>
-                  <View style={{ flex: 1 }} />
-                  <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
-                    <View>
-                      <LinearGradient
-                        colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginRight: 2 }}
-                      >
-                        <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Xem ngay</Text>
-                      </LinearGradient>
-                    </View>
-                  </View>
-                </View>
-              </View> */}
-              <View style={{ height: screenHeight*0.08 }} />
+
+              <View style={{ height: screenHeight * 0.08 }} />
             </TouchableOpacity>}
 
         </MenuDrawer>

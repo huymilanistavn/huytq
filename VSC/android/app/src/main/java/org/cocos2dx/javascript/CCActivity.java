@@ -43,7 +43,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.Keep;
 
-import com.sin88.MainActivity;
+import com.vsc.MainActivity;
 
 import java.io.File;
 import java.io.IOException;

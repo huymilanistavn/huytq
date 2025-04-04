@@ -112,7 +112,7 @@ class App extends Component<{
       progress: false,
       hasInternet: true,
       gotoMain: false, //cheat true
-      introLoaded: false,
+      introLoaded: true,
       showIntroLoop: false,
       renderApp: false,
       isShowingDumbGame: false
@@ -129,6 +129,11 @@ class App extends Component<{
     //console.log("James log");
     //eventEmitter.addListener('onCloseCCGame', onCloseCCGame);
     //g.sound.playLoop();
+  }
+
+  isTV() {
+    if (Dimensions.get('screen').width > Dimensions.get('screen').height) return true;
+    else return false;
   }
 
   async checkUnlock() {
@@ -277,8 +282,7 @@ class App extends Component<{
   render() {
     let progressView;
 
-    if (typeof this.state.progress === 'object') {
-      progressView = (
+   if (typeof this.state.progress === 'object') {
         <Progress.Circle progress={Math.round(this.state.progress.receivedBytes / this.state.progress.totalBytes)} color={'#FCE281'}
           unfilledColor={'#0E3747'}
           size={50}
@@ -287,8 +291,7 @@ class App extends Component<{
           textStyle={{ color: '#FCE281', fontSize: 12, fontFamily: 'Roboto-Medium' }}
           borderWidth={0}
           thickness={4}
-          style={{ alignSelf: 'center', marginTop: Platform.OS === 'android' ? -85 : -60 }} />
-      );
+          style={{ alignSelf: 'center', marginTop: Platform.OS === 'android' ? 85 : 80 }} />
     }
 
     return (this.state.gotoMain && this.state.introLoaded) ?
@@ -356,17 +359,8 @@ class App extends Component<{
 
           <StatusBar barStyle={'light-content'} hidden={Platform.OS === 'android' ? true : false} />
           <View style={{ flex: 1, alignContent: 'center', alignSelf: 'center' }}>
-            <Image source={require('../assets/images/logo-loading.png')} style={{ alignSelf: 'center', marginTop: 100, width: Dimensions.get('screen').width, height: Dimensions.get('screen').width * 0.7 }} />
-            {this.state.showIntroLoop === false && <LottieView source={require('../assets/animations/data.json')} autoPlay
-              loop={false}
-              style={{ width: 400, height: 180, alignSelf: 'center', marginTop: -20 }}
-              onAnimationFinish={() => { this.setState({ introLoaded: true, showIntroLoop: true }) }}
-            />}
-            {this.state.showIntroLoop === true &&<LottieView source={require('../assets/animations/logo-loop.json')} autoPlay
-              loop={true}
-              style={{ width: 400, height: 180, alignSelf: 'center', marginTop: -20 }}
-              //onAnimationFinish={() => { this.setState({ introLoaded: true }) }}
-            />}
+            <Image source={require('../assets/images/logo-loading.png')} style={{ alignSelf: 'center', marginTop: this.isTV()?-300:100, width: Dimensions.get('screen').width, height: Dimensions.get('screen').width * 0.7 }} />
+            <Image source={require('../assets/images/logo-img.png')} style={{ position:'absolute',margin:'auto',top:Dimensions.get('screen').height/2 -100, left:Dimensions.get('screen').width/2 -125,  width: 250, height: 200 }} />
             {progressView}
           </View>
         </LinearGradient>

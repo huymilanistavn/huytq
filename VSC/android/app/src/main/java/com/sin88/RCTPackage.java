@@ -1,4 +1,4 @@
-package com.sin88;
+package com.vsc;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;

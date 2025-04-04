@@ -226,8 +226,8 @@ export class Api {
     })
   };
   hotmatchNews() {
-    return getData({
-      path: `api-promotion/v1/hotmatch`,
+    return get({
+      path: `wp-json/scores/v1/all`,
     })
   };
   resultMatchList() {
