@@ -76,7 +76,7 @@ export default class Livematch extends React.Component<{
         >
           <ScrollView contentInsetAdjustmentBehavior="automatic" showsVerticalScrollIndicator={false} style={{ backgroundColor: '#080247' }} scrollEventThrottle={16} bounces={true}>
             {/* content */}
-            <Video source={{ uri: 'https://vniptv.simplecdn.lol/streams/2acee715-5193-44ac-bde6-1b4ef53003f0720p-playlist.m3u8' }}   // Can be a URL or a local file.
+            <Video source={{ uri: this.props.route.params.data.live_stream_app_url }}   // 'https://vniptv.simplecdn.lol/streams/2acee715-5193-44ac-bde6-1b4ef53003f0720p-playlist.m3u8'
               ref={(ref) => {
                 this.player = ref
               }}                                      // Store reference

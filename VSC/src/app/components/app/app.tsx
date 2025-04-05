@@ -26,7 +26,9 @@ import HomeLodeCalendarPicker from "../commons/homelodecalendarpicker";
 import MenuDrawer from 'react-native-side-drawer';
 import WithComponentHooks from "with-component-hooks";
 
+
 import GlobalKeyEvent from 'react-native-global-keyevent';
+
 
 LogBox.ignoreLogs([
   "exported from 'deprecated-react-native-prop-types'.",
@@ -98,8 +100,18 @@ class App extends React.Component<{
 
     this.callAllMatch();
 
-
-
+    Platform.OS == 'android' && GlobalKeyEvent.addKeyDownListener((evt) => {
+      //alert('code:' + evt.keyCode)
+      //alert('key:' + evt)
+      if (evt.keyCode == 21 && this._carousel.currentIndex != 0) { //left
+        this._carousel.snapToPrev();
+        this.setState({ indexTVnode: this._carousel.currentIndex - 1 })
+      }
+      if (evt.keyCode == 22 && (this._carousel.currentIndex != this.state.hotMatchList.length)) { //right
+        this._carousel.snapToNext();
+        this.setState({ indexTVnode: this._carousel.currentIndex + 1 })
+      }
+    })
     //bg music sound
     //g.sound.playLoop();
 
@@ -133,19 +145,6 @@ class App extends React.Component<{
       if (res.data) {
         //console.log(res);
         this.setState({ hotMatchList: res.data });
-
-        Platform.OS == 'android' && GlobalKeyEvent.addKeyDownListener((evt) => {
-          //alert('code:' + evt.keyCode)
-          //alert('key:' + evt)
-          if (evt.keyCode == 21 && this._carousel.currentIndex != 0) { //left
-            this._carousel.snapToPrev();
-            this.setState({ indexTVnode: this._carousel.currentIndex - 1 })
-          }
-          if (evt.keyCode == 22 && (this._carousel.currentIndex != res.data.length)) { //right
-            this._carousel.snapToNext();
-            this.setState({ indexTVnode: this._carousel.currentIndex + 1 })
-          }
-        })
       }
     });
   }
@@ -171,7 +170,59 @@ class App extends React.Component<{
     this.offset = currentOffset;
   };
 
-
+  _renderItemPhone = ({ item, index }) => {
+    return (
+      <View style={{ backgroundColor: '#080247', height: 266, flex: 1, borderRadius: 16, margin: 8 }}>
+        <Text style={{ marginVertical: 18, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '700', fontFamily: 'Roboto-Bold' }}>{item.league}</Text>
+        <ImageBackground source={require('../../../assets/images/bg-match.png')} style={{ height: 81, justifyContent: "space-around", flexDirection: 'row' }}
+          imageStyle={{}}>
+          <FastImage
+            style={{ width: 60, height: 60, alignSelf: 'center' }}
+            source={{ uri: item?.home_team.logo }}
+            resizeMode={FastImage.resizeMode.stretch}
+          />
+          <View style={{ height: 60 }}>
+            {item.live_stream_app_url != '' ? <View style={{ backgroundColor: '#ED1B4A', borderRadius: 13, width: 80, height: 26, justifyContent: 'center' }}>
+              <Text style={{ fontWeight: '800', fontFamily: 'Roboto-Bold', fontSize: 13, textAlign: 'center', color: '#FFF' }}>Trực tiếp</Text>
+            </View> : <View />}
+            <Text style={{ marginTop: 14, color: '#FFBC15', fontSize: 22, textAlign: 'center', fontWeight: '900', fontFamily: 'Roboto-Bold' }}>{item?.date_time?.time}</Text>
+            <Text style={{ marginTop: 6, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '600', fontFamily: 'Roboto-Bold' }}>{item?.date_time?.date}</Text>
+          </View>
+          <FastImage
+            style={{ width: 60, height: 60, alignSelf: 'center' }}
+            source={{ uri: item?.away_team.logo }}
+            resizeMode={FastImage.resizeMode.stretch}
+          />
+        </ImageBackground>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+          <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>{item?.home_team?.name}</Text>
+          <View style={{ flex: 1 }} />
+          <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>{item?.away_team?.name}</Text>
+        </View>
+        <View style={{ flex: 1 }} />
+        <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
+          <TouchableOpacity onPress={() => { g.sound.play('bet_click'); this.props.navigation.navigate('Livematch',{ data: this.state.hotMatchList[index] }); }}>
+            <LinearGradient
+              colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginRight: 2 }}
+            >
+              <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Xem ngay</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+          <LinearGradient
+            colors={['#3252E6', '#0024C9']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginLeft: 2 }}
+          >
+            <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Đặt cược</Text>
+          </LinearGradient>
+        </View>
+      </View>
+    );
+  }
   _renderItemTV = ({ item, index }) => {
     return (
       <View style={{ backgroundColor: this.state.indexTVnode == index ? '#080247' : "#333", height: 220, borderRadius: 16, margin: 8 }}>
@@ -259,266 +310,295 @@ class App extends React.Component<{
         >
 
           {/* content */}
-          {!this.isTV() && <ScrollView contentInsetAdjustmentBehavior="automatic" showsVerticalScrollIndicator={false} style={{ backgroundColor: '#020d24' }} scrollEventThrottle={16} onScroll={(e) => { this.onScroll(e); }} bounces={false}>
-            {/* Swiper and Top Index */}
-            <View style={{ marginBottom: 15, marginTop: 15, flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-              <LinearGradient
-                colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={{ width: 82, height: 32, borderRadius: 16, justifyContent: 'center' }}
-              >
-                <Text style={{ color: '#000', fontSize: 14, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>TẤT CẢ</Text>
-              </LinearGradient>
-              <View style={{ width: 82, height: 32, borderColor: '#FFFFFF', borderWidth: 1, borderRadius: 16, justifyContent: 'center' }}>
-                <Text style={{ color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>TRỰC TIẾP</Text>
-              </View>
-              <View style={{ width: 82, height: 32, borderColor: '#FFFFFF', borderWidth: 1, borderRadius: 16, justifyContent: 'center' }}>
-                <Text style={{ color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>TRẬN HOT</Text>
-              </View>
-              <View style={{ width: 82, height: 32, borderColor: '#FFFFFF', borderWidth: 1, borderRadius: 16, justifyContent: 'center' }}>
-                <Text style={{ color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>HÔM NAY</Text>
-              </View>
-            </View>
-
-            <View style={{ backgroundColor: '#080247', height: 266, flex: 1, borderRadius: 16, margin: 8 }}>
-              <Text style={{ marginVertical: 18, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '700', fontFamily: 'Roboto-Bold' }}>Giao Hữu</Text>
-              <ImageBackground source={require('../../../assets/images/bg-match.png')} style={{ height: 81, justifyContent: "space-around", flexDirection: 'row' }}
-                imageStyle={{}}>
-                <FastImage
-                  style={{ width: 60, height: 60, alignSelf: 'center' }}
-                  source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/05/France-U20.webp' }}
-                  resizeMode={FastImage.resizeMode.stretch}
-                />
-                <View style={{ height: 60 }}>
-                  <View style={{ backgroundColor: '#ED1B4A', borderRadius: 13, width: 80, height: 26, justifyContent: 'center' }}>
-                    <Text style={{ fontWeight: '800', fontFamily: 'Roboto-Bold', fontSize: 13, textAlign: 'center', color: '#FFF' }}>Trực tiếp</Text>
-                  </View>
-                  <Text style={{ marginTop: 14, color: '#FFBC15', fontSize: 22, textAlign: 'center', fontWeight: '900', fontFamily: 'Roboto-Bold' }}>17:00</Text>
-                  <Text style={{ marginTop: 6, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '600', fontFamily: 'Roboto-Bold' }}>24/03/2025</Text>
-                </View>
-                <FastImage
-                  style={{ width: 60, height: 60, alignSelf: 'center' }}
-                  source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/10/Mexico.webp' }}
-                  resizeMode={FastImage.resizeMode.stretch}
-                />
-              </ImageBackground>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>France U20</Text>
-                <View style={{ flex: 1 }} />
-                <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>Mexico U20</Text>
-              </View>
-              <View style={{ flex: 1 }} />
-              <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
-                <TouchableOpacity onPress={() => { g.sound.play('bet_click'); this.props.navigation.navigate('Livematch'); }}>
-                  <LinearGradient
-                    colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginRight: 2 }}
-                  >
-                    <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Xem ngay</Text>
-                  </LinearGradient>
-                </TouchableOpacity>
-                <LinearGradient
-                  colors={['#3252E6', '#0024C9']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginLeft: 2 }}
-                >
-                  <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Đặt cược</Text>
-                </LinearGradient>
-              </View>
-            </View>
-
-            <View style={{ backgroundColor: '#080247', height: 266, flex: 1, borderRadius: 16, margin: 8 }}>
-              <Text style={{ marginVertical: 18, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '700', fontFamily: 'Roboto-Bold' }}>Giao Hữu 1</Text>
-              <ImageBackground source={require('../../../assets/images/bg-match.png')} style={{ height: 81, justifyContent: "space-around", flexDirection: 'row' }}
-                imageStyle={{}}>
-                <FastImage
-                  style={{ width: 60, height: 60, alignSelf: 'center' }}
-                  source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/05/France-U20.webp' }}
-                  resizeMode={FastImage.resizeMode.stretch}
-                />
-                <View style={{ height: 60 }}>
-                  <Text style={{ marginTop: 14, color: '#FFBC15', fontSize: 22, textAlign: 'center', fontWeight: '900', fontFamily: 'Roboto-Bold' }}>17:00</Text>
-                  <Text style={{ marginTop: 6, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '600', fontFamily: 'Roboto-Bold' }}>24/03/2025</Text>
-                </View>
-                <FastImage
-                  style={{ width: 60, height: 60, alignSelf: 'center' }}
-                  source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/10/Mexico.webp' }}
-                  resizeMode={FastImage.resizeMode.stretch}
-                />
-              </ImageBackground>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>France U20</Text>
-                <View style={{ flex: 1 }} />
-                <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>Mexico U20</Text>
-              </View>
-              <View style={{ flex: 1 }} />
-              <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
+          {!this.isTV() &&
+            <ScrollView contentInsetAdjustmentBehavior="automatic" showsVerticalScrollIndicator={false} style={{ backgroundColor: '#020d24' }} scrollEventThrottle={16} onScroll={(e) => { this.onScroll(e); }} bounces={false}>
+              {/* Swiper and Top Index */}
+              <View style={{ marginBottom: 15, marginTop: 15, flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
                 <LinearGradient
                   colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
-                  style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginRight: 2 }}
+                  style={{ width: 82, height: 32, borderRadius: 16, justifyContent: 'center' }}
                 >
-                  <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Xem ngay</Text>
+                  <Text style={{ color: '#000', fontSize: 14, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>TẤT CẢ</Text>
                 </LinearGradient>
-                <LinearGradient
-                  colors={['#3252E6', '#0024C9']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginLeft: 2 }}
-                >
-                  <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Đặt cược</Text>
-                </LinearGradient>
-              </View>
-            </View>
-
-            <View style={{ backgroundColor: '#080247', height: 266, flex: 1, borderRadius: 16, margin: 8 }}>
-              <Text style={{ marginVertical: 18, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '700', fontFamily: 'Roboto-Bold' }}>Giao Hữu 2</Text>
-              <ImageBackground source={require('../../../assets/images/bg-match.png')} style={{ height: 81, justifyContent: "space-around", flexDirection: 'row' }}
-                imageStyle={{}}>
-                <FastImage
-                  style={{ width: 60, height: 60, alignSelf: 'center' }}
-                  source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/05/France-U20.webp' }}
-                  resizeMode={FastImage.resizeMode.stretch}
-                />
-                <View style={{ height: 60 }}>
-                  <Text style={{ marginTop: 14, color: '#FFBC15', fontSize: 22, textAlign: 'center', fontWeight: '900', fontFamily: 'Roboto-Bold' }}>17:00</Text>
-                  <Text style={{ marginTop: 6, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '600', fontFamily: 'Roboto-Bold' }}>24/03/2025</Text>
+                <View style={{ width: 82, height: 32, borderColor: '#FFFFFF', borderWidth: 1, borderRadius: 16, justifyContent: 'center' }}>
+                  <Text style={{ color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>TRỰC TIẾP</Text>
                 </View>
-                <FastImage
-                  style={{ width: 60, height: 60, alignSelf: 'center' }}
-                  source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/10/Mexico.webp' }}
-                  resizeMode={FastImage.resizeMode.stretch}
-                />
-              </ImageBackground>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>France U20</Text>
-                <View style={{ flex: 1 }} />
-                <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>Mexico U20</Text>
-              </View>
-              <View style={{ flex: 1 }} />
-              <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
-                <LinearGradient
-                  colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginRight: 2 }}
-                >
-                  <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Xem ngay</Text>
-                </LinearGradient>
-                <LinearGradient
-                  colors={['#3252E6', '#0024C9']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginLeft: 2 }}
-                >
-                  <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Đặt cược</Text>
-                </LinearGradient>
-              </View>
-            </View>
-
-            <View style={{ backgroundColor: '#080247', height: 266, flex: 1, borderRadius: 16, margin: 8 }}>
-              <Text style={{ marginVertical: 18, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '700', fontFamily: 'Roboto-Bold' }}>Giao Hữu 3</Text>
-              <ImageBackground source={require('../../../assets/images/bg-match.png')} style={{ height: 81, justifyContent: "space-around", flexDirection: 'row' }}
-                imageStyle={{}}>
-                <FastImage
-                  style={{ width: 60, height: 60, alignSelf: 'center' }}
-                  source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/05/France-U20.webp' }}
-                  resizeMode={FastImage.resizeMode.stretch}
-                />
-                <View style={{ height: 60 }}>
-                  <Text style={{ marginTop: 14, color: '#FFBC15', fontSize: 22, textAlign: 'center', fontWeight: '900', fontFamily: 'Roboto-Bold' }}>17:00</Text>
-                  <Text style={{ marginTop: 6, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '600', fontFamily: 'Roboto-Bold' }}>24/03/2025</Text>
+                <View style={{ width: 82, height: 32, borderColor: '#FFFFFF', borderWidth: 1, borderRadius: 16, justifyContent: 'center' }}>
+                  <Text style={{ color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>TRẬN HOT</Text>
                 </View>
-                <FastImage
-                  style={{ width: 60, height: 60, alignSelf: 'center' }}
-                  source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/10/Mexico.webp' }}
-                  resizeMode={FastImage.resizeMode.stretch}
-                />
-              </ImageBackground>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>France U20</Text>
-                <View style={{ flex: 1 }} />
-                <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>Mexico U20</Text>
-              </View>
-              <View style={{ flex: 1 }} />
-              <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
-                <LinearGradient
-                  colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginRight: 2 }}
-                >
-                  <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Xem ngay</Text>
-                </LinearGradient>
-                <LinearGradient
-                  colors={['#3252E6', '#0024C9']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginLeft: 2 }}
-                >
-                  <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Đặt cược</Text>
-                </LinearGradient>
-              </View>
-            </View>
-
-            <View style={{ backgroundColor: '#080247', height: 266, flex: 1, borderRadius: 16, margin: 8 }}>
-              <Text style={{ marginVertical: 18, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '700', fontFamily: 'Roboto-Bold' }}>Giao Hữu 4</Text>
-              <ImageBackground source={require('../../../assets/images/bg-match.png')} style={{ height: 81, justifyContent: "space-around", flexDirection: 'row' }}
-                imageStyle={{}}>
-                <FastImage
-                  style={{ width: 60, height: 60, alignSelf: 'center' }}
-                  source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/05/France-U20.webp' }}
-                  resizeMode={FastImage.resizeMode.stretch}
-                />
-                <View style={{ height: 60 }}>
-                  <Text style={{ marginTop: 14, color: '#FFBC15', fontSize: 22, textAlign: 'center', fontWeight: '900', fontFamily: 'Roboto-Bold' }}>17:00</Text>
-                  <Text style={{ marginTop: 6, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '600', fontFamily: 'Roboto-Bold' }}>24/03/2025</Text>
+                <View style={{ width: 82, height: 32, borderColor: '#FFFFFF', borderWidth: 1, borderRadius: 16, justifyContent: 'center' }}>
+                  <Text style={{ color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>HÔM NAY</Text>
                 </View>
-                <FastImage
-                  style={{ width: 60, height: 60, alignSelf: 'center' }}
-                  source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/10/Mexico.webp' }}
-                  resizeMode={FastImage.resizeMode.stretch}
-                />
-              </ImageBackground>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>France U20</Text>
-                <View style={{ flex: 1 }} />
-                <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>Mexico U20</Text>
               </View>
-              <View style={{ flex: 1 }} />
-              <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
-                <LinearGradient
-                  colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginRight: 2 }}
-                >
-                  <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Xem ngay</Text>
-                </LinearGradient>
-                <LinearGradient
-                  colors={['#3252E6', '#0024C9']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginLeft: 2 }}
-                >
-                  <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Đặt cược</Text>
-                </LinearGradient>
-              </View>
-            </View>
+              <FlatList
+                data={this.state.hotMatchList}
+                renderItem={this._renderItemPhone}
+                keyExtractor={item => item.id}
+              />
+            </ScrollView>
+            // <ScrollView contentInsetAdjustmentBehavior="automatic" showsVerticalScrollIndicator={false} style={{ backgroundColor: '#020d24' }} scrollEventThrottle={16} onScroll={(e) => { this.onScroll(e); }} bounces={false}>
+            //   {/* Swiper and Top Index */}
+            //   <View style={{ marginBottom: 15, marginTop: 15, flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+            //     <LinearGradient
+            //       colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
+            //       start={{ x: 0, y: 0 }}
+            //       end={{ x: 1, y: 0 }}
+            //       style={{ width: 82, height: 32, borderRadius: 16, justifyContent: 'center' }}
+            //     >
+            //       <Text style={{ color: '#000', fontSize: 14, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>TẤT CẢ</Text>
+            //     </LinearGradient>
+            //     <View style={{ width: 82, height: 32, borderColor: '#FFFFFF', borderWidth: 1, borderRadius: 16, justifyContent: 'center' }}>
+            //       <Text style={{ color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>TRỰC TIẾP</Text>
+            //     </View>
+            //     <View style={{ width: 82, height: 32, borderColor: '#FFFFFF', borderWidth: 1, borderRadius: 16, justifyContent: 'center' }}>
+            //       <Text style={{ color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>TRẬN HOT</Text>
+            //     </View>
+            //     <View style={{ width: 82, height: 32, borderColor: '#FFFFFF', borderWidth: 1, borderRadius: 16, justifyContent: 'center' }}>
+            //       <Text style={{ color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>HÔM NAY</Text>
+            //     </View>
+            //   </View>
+
+            //   <View style={{ backgroundColor: '#080247', height: 266, flex: 1, borderRadius: 16, margin: 8 }}>
+            //     <Text style={{ marginVertical: 18, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '700', fontFamily: 'Roboto-Bold' }}>Giao Hữu</Text>
+            //     <ImageBackground source={require('../../../assets/images/bg-match.png')} style={{ height: 81, justifyContent: "space-around", flexDirection: 'row' }}
+            //       imageStyle={{}}>
+            //       <FastImage
+            //         style={{ width: 60, height: 60, alignSelf: 'center' }}
+            //         source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/05/France-U20.webp' }}
+            //         resizeMode={FastImage.resizeMode.stretch}
+            //       />
+            //       <View style={{ height: 60 }}>
+            //         <View style={{ backgroundColor: '#ED1B4A', borderRadius: 13, width: 80, height: 26, justifyContent: 'center' }}>
+            //           <Text style={{ fontWeight: '800', fontFamily: 'Roboto-Bold', fontSize: 13, textAlign: 'center', color: '#FFF' }}>Trực tiếp</Text>
+            //         </View>
+            //         <Text style={{ marginTop: 14, color: '#FFBC15', fontSize: 22, textAlign: 'center', fontWeight: '900', fontFamily: 'Roboto-Bold' }}>17:00</Text>
+            //         <Text style={{ marginTop: 6, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '600', fontFamily: 'Roboto-Bold' }}>24/03/2025</Text>
+            //       </View>
+            //       <FastImage
+            //         style={{ width: 60, height: 60, alignSelf: 'center' }}
+            //         source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/10/Mexico.webp' }}
+            //         resizeMode={FastImage.resizeMode.stretch}
+            //       />
+            //     </ImageBackground>
+            //     <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+            //       <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>France U20</Text>
+            //       <View style={{ flex: 1 }} />
+            //       <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>Mexico U20</Text>
+            //     </View>
+            //     <View style={{ flex: 1 }} />
+            //     <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
+            //       <TouchableOpacity onPress={() => { g.sound.play('bet_click'); this.props.navigation.navigate('Livematch'); }}>
+            //         <LinearGradient
+            //           colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
+            //           start={{ x: 0, y: 0 }}
+            //           end={{ x: 1, y: 0 }}
+            //           style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginRight: 2 }}
+            //         >
+            //           <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Xem ngay</Text>
+            //         </LinearGradient>
+            //       </TouchableOpacity>
+            //       <LinearGradient
+            //         colors={['#3252E6', '#0024C9']}
+            //         start={{ x: 0, y: 0 }}
+            //         end={{ x: 1, y: 0 }}
+            //         style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginLeft: 2 }}
+            //       >
+            //         <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Đặt cược</Text>
+            //       </LinearGradient>
+            //     </View>
+            //   </View>
+
+            //   <View style={{ backgroundColor: '#080247', height: 266, flex: 1, borderRadius: 16, margin: 8 }}>
+            //     <Text style={{ marginVertical: 18, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '700', fontFamily: 'Roboto-Bold' }}>Giao Hữu 1</Text>
+            //     <ImageBackground source={require('../../../assets/images/bg-match.png')} style={{ height: 81, justifyContent: "space-around", flexDirection: 'row' }}
+            //       imageStyle={{}}>
+            //       <FastImage
+            //         style={{ width: 60, height: 60, alignSelf: 'center' }}
+            //         source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/05/France-U20.webp' }}
+            //         resizeMode={FastImage.resizeMode.stretch}
+            //       />
+            //       <View style={{ height: 60 }}>
+            //         <Text style={{ marginTop: 14, color: '#FFBC15', fontSize: 22, textAlign: 'center', fontWeight: '900', fontFamily: 'Roboto-Bold' }}>17:00</Text>
+            //         <Text style={{ marginTop: 6, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '600', fontFamily: 'Roboto-Bold' }}>24/03/2025</Text>
+            //       </View>
+            //       <FastImage
+            //         style={{ width: 60, height: 60, alignSelf: 'center' }}
+            //         source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/10/Mexico.webp' }}
+            //         resizeMode={FastImage.resizeMode.stretch}
+            //       />
+            //     </ImageBackground>
+            //     <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+            //       <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>France U20</Text>
+            //       <View style={{ flex: 1 }} />
+            //       <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>Mexico U20</Text>
+            //     </View>
+            //     <View style={{ flex: 1 }} />
+            //     <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
+            //       <LinearGradient
+            //         colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
+            //         start={{ x: 0, y: 0 }}
+            //         end={{ x: 1, y: 0 }}
+            //         style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginRight: 2 }}
+            //       >
+            //         <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Xem ngay</Text>
+            //       </LinearGradient>
+            //       <LinearGradient
+            //         colors={['#3252E6', '#0024C9']}
+            //         start={{ x: 0, y: 0 }}
+            //         end={{ x: 1, y: 0 }}
+            //         style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginLeft: 2 }}
+            //       >
+            //         <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Đặt cược</Text>
+            //       </LinearGradient>
+            //     </View>
+            //   </View>
+
+            //   <View style={{ backgroundColor: '#080247', height: 266, flex: 1, borderRadius: 16, margin: 8 }}>
+            //     <Text style={{ marginVertical: 18, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '700', fontFamily: 'Roboto-Bold' }}>Giao Hữu 2</Text>
+            //     <ImageBackground source={require('../../../assets/images/bg-match.png')} style={{ height: 81, justifyContent: "space-around", flexDirection: 'row' }}
+            //       imageStyle={{}}>
+            //       <FastImage
+            //         style={{ width: 60, height: 60, alignSelf: 'center' }}
+            //         source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/05/France-U20.webp' }}
+            //         resizeMode={FastImage.resizeMode.stretch}
+            //       />
+            //       <View style={{ height: 60 }}>
+            //         <Text style={{ marginTop: 14, color: '#FFBC15', fontSize: 22, textAlign: 'center', fontWeight: '900', fontFamily: 'Roboto-Bold' }}>17:00</Text>
+            //         <Text style={{ marginTop: 6, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '600', fontFamily: 'Roboto-Bold' }}>24/03/2025</Text>
+            //       </View>
+            //       <FastImage
+            //         style={{ width: 60, height: 60, alignSelf: 'center' }}
+            //         source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/10/Mexico.webp' }}
+            //         resizeMode={FastImage.resizeMode.stretch}
+            //       />
+            //     </ImageBackground>
+            //     <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+            //       <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>France U20</Text>
+            //       <View style={{ flex: 1 }} />
+            //       <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>Mexico U20</Text>
+            //     </View>
+            //     <View style={{ flex: 1 }} />
+            //     <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
+            //       <LinearGradient
+            //         colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
+            //         start={{ x: 0, y: 0 }}
+            //         end={{ x: 1, y: 0 }}
+            //         style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginRight: 2 }}
+            //       >
+            //         <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Xem ngay</Text>
+            //       </LinearGradient>
+            //       <LinearGradient
+            //         colors={['#3252E6', '#0024C9']}
+            //         start={{ x: 0, y: 0 }}
+            //         end={{ x: 1, y: 0 }}
+            //         style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginLeft: 2 }}
+            //       >
+            //         <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Đặt cược</Text>
+            //       </LinearGradient>
+            //     </View>
+            //   </View>
+
+            //   <View style={{ backgroundColor: '#080247', height: 266, flex: 1, borderRadius: 16, margin: 8 }}>
+            //     <Text style={{ marginVertical: 18, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '700', fontFamily: 'Roboto-Bold' }}>Giao Hữu 3</Text>
+            //     <ImageBackground source={require('../../../assets/images/bg-match.png')} style={{ height: 81, justifyContent: "space-around", flexDirection: 'row' }}
+            //       imageStyle={{}}>
+            //       <FastImage
+            //         style={{ width: 60, height: 60, alignSelf: 'center' }}
+            //         source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/05/France-U20.webp' }}
+            //         resizeMode={FastImage.resizeMode.stretch}
+            //       />
+            //       <View style={{ height: 60 }}>
+            //         <Text style={{ marginTop: 14, color: '#FFBC15', fontSize: 22, textAlign: 'center', fontWeight: '900', fontFamily: 'Roboto-Bold' }}>17:00</Text>
+            //         <Text style={{ marginTop: 6, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '600', fontFamily: 'Roboto-Bold' }}>24/03/2025</Text>
+            //       </View>
+            //       <FastImage
+            //         style={{ width: 60, height: 60, alignSelf: 'center' }}
+            //         source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/10/Mexico.webp' }}
+            //         resizeMode={FastImage.resizeMode.stretch}
+            //       />
+            //     </ImageBackground>
+            //     <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+            //       <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>France U20</Text>
+            //       <View style={{ flex: 1 }} />
+            //       <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>Mexico U20</Text>
+            //     </View>
+            //     <View style={{ flex: 1 }} />
+            //     <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
+            //       <LinearGradient
+            //         colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
+            //         start={{ x: 0, y: 0 }}
+            //         end={{ x: 1, y: 0 }}
+            //         style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginRight: 2 }}
+            //       >
+            //         <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Xem ngay</Text>
+            //       </LinearGradient>
+            //       <LinearGradient
+            //         colors={['#3252E6', '#0024C9']}
+            //         start={{ x: 0, y: 0 }}
+            //         end={{ x: 1, y: 0 }}
+            //         style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginLeft: 2 }}
+            //       >
+            //         <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Đặt cược</Text>
+            //       </LinearGradient>
+            //     </View>
+            //   </View>
+
+            //   <View style={{ backgroundColor: '#080247', height: 266, flex: 1, borderRadius: 16, margin: 8 }}>
+            //     <Text style={{ marginVertical: 18, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '700', fontFamily: 'Roboto-Bold' }}>Giao Hữu 4</Text>
+            //     <ImageBackground source={require('../../../assets/images/bg-match.png')} style={{ height: 81, justifyContent: "space-around", flexDirection: 'row' }}
+            //       imageStyle={{}}>
+            //       <FastImage
+            //         style={{ width: 60, height: 60, alignSelf: 'center' }}
+            //         source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/05/France-U20.webp' }}
+            //         resizeMode={FastImage.resizeMode.stretch}
+            //       />
+            //       <View style={{ height: 60 }}>
+            //         <Text style={{ marginTop: 14, color: '#FFBC15', fontSize: 22, textAlign: 'center', fontWeight: '900', fontFamily: 'Roboto-Bold' }}>17:00</Text>
+            //         <Text style={{ marginTop: 6, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '600', fontFamily: 'Roboto-Bold' }}>24/03/2025</Text>
+            //       </View>
+            //       <FastImage
+            //         style={{ width: 60, height: 60, alignSelf: 'center' }}
+            //         source={{ uri: 'https://vsc63.com/wp-content/uploads/2023/10/Mexico.webp' }}
+            //         resizeMode={FastImage.resizeMode.stretch}
+            //       />
+            //     </ImageBackground>
+            //     <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+            //       <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>France U20</Text>
+            //       <View style={{ flex: 1 }} />
+            //       <Text style={{ flex: 1, marginVertical: 16, color: '#FFF', fontSize: 14, textAlign: 'center', fontWeight: '800', fontFamily: 'Roboto-Bold' }}>Mexico U20</Text>
+            //     </View>
+            //     <View style={{ flex: 1 }} />
+            //     <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 16 }}>
+            //       <LinearGradient
+            //         colors={['rgba(255, 187, 23, 1)', 'rgba(218, 118, 7, 1)']}
+            //         start={{ x: 0, y: 0 }}
+            //         end={{ x: 1, y: 0 }}
+            //         style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginRight: 2 }}
+            //       >
+            //         <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Xem ngay</Text>
+            //       </LinearGradient>
+            //       <LinearGradient
+            //         colors={['#3252E6', '#0024C9']}
+            //         start={{ x: 0, y: 0 }}
+            //         end={{ x: 1, y: 0 }}
+            //         style={{ width: 140, height: 42, borderRadius: 6, justifyContent: 'center', marginLeft: 2 }}
+            //       >
+            //         <Text style={{ color: '#FFF', fontSize: 16, textAlign: 'center', fontWeight: '500', fontFamily: 'Roboto-Bold' }}>Đặt cược</Text>
+            //       </LinearGradient>
+            //     </View>
+            //   </View>
 
 
-          </ScrollView>}
+            // </ScrollView>
+          }
 
           {this.isTV() &&
             <TouchableOpacity
               onPress={() => {
                 g.sound.play('bet_click');
-                if (this.state.hotMatchList[this._carousel.currentIndex] == '')
+                if (this.state.hotMatchList[this._carousel.currentIndex].live_stream_app_url == '')
                   alert("CHưa có dữ liệu trận đấu!")
                 else
                   this.props.navigation.navigate('Livematch', { data: this.state.hotMatchList[this._carousel.currentIndex] })
