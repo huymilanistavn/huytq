@@ -48,6 +48,7 @@ export default class Livematch extends React.Component<{
               ref={(ref) => {
                 this.player = ref
               }}
+              resizeMode={'cover'}
               style={styles.backgroundVideoTV} />
       :<SafeAreaView style={styles.container}>
         {/* Header */}

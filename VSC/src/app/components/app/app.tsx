@@ -27,7 +27,7 @@ import MenuDrawer from 'react-native-side-drawer';
 import WithComponentHooks from "with-component-hooks";
 
 
-import GlobalKeyEvent from 'react-native-global-keyevent';
+//import GlobalKeyEvent from 'react-native-global-keyevent';
 
 
 LogBox.ignoreLogs([
@@ -94,27 +94,26 @@ class App extends React.Component<{
   lodeDateSelected = Moment(Date()).add(-1, 'days').format('DD-MM-YYYY');
   _carousel: any;
 
+  indexTV = 0;
   componentDidMount() {
     // call refresh to check islogin connection server
     this._isMounted = true;
-
+    this.indexTV = 0;
     this.callAllMatch();
 
-    Platform.OS == 'android' && GlobalKeyEvent.addKeyDownListener((evt) => {
+    Platform.OS == 'android' && GlobalKeyEvent.addKeyUpListener((evt) => {
       //alert('code:' + evt.keyCode)
       //alert('key:' + evt)
-      if (evt.keyCode == 21 && this._carousel.currentIndex != 0) { //left
-        this._carousel.snapToPrev();
-        this.setState({ indexTVnode: this._carousel.currentIndex - 1 })
+      g.sound.play('bet_click');
+      if (evt.keyCode == 21 && this.indexTV != 0) { //left
+        this.indexTV--;
       }
-      if (evt.keyCode == 22 && (this._carousel.currentIndex != this.state.hotMatchList.length)) { //right
-        this._carousel.snapToNext();
-        this.setState({ indexTVnode: this._carousel.currentIndex + 1 })
+      if (evt.keyCode == 22 && (this.indexTV != this.state.hotMatchList.length)) { //right
+        this.indexTV++;
       }
+      this.setState({ indexTVnode: this.indexTV });
+      this._carousel.snapToItem(this.indexTV);
     })
-    //bg music sound
-    //g.sound.playLoop();
-
   }
 
   componentWillUnmount() {
@@ -598,8 +597,8 @@ class App extends React.Component<{
             <TouchableOpacity
               onPress={() => {
                 g.sound.play('bet_click');
-                if (this.state.hotMatchList[this._carousel.currentIndex].live_stream_app_url == '')
-                  alert("CHưa có dữ liệu trận đấu!")
+                if (this.state.hotMatchList[this.indexTV].live_stream_app_url == '')
+                  alert("Chưa có dữ liệu trận đấu!")
                 else
                   this.props.navigation.navigate('Livematch', { data: this.state.hotMatchList[this._carousel.currentIndex] })
               }
@@ -610,6 +609,7 @@ class App extends React.Component<{
               <Carousel
                 ref={(c) => { this._carousel = c; }}
                 layout={'default'}
+                enableMomentum={true}
                 style={{ paddingBottom: 100 }}
                 inactiveSlideScale={1}
                 inactiveSlideOpacity={0.5}

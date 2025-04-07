@@ -43,7 +43,6 @@ import Livematch from './components/app/livematch';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios, { AxiosRequestConfig } from 'axios';
 import { g } from './g';
-
 //const { NativeModule } = NativeModules;
 //const eventEmitter = Platform.OS === 'ios' ? new NativeEventEmitter(NativeModule) : DeviceEventEmitter;
 
@@ -120,8 +119,6 @@ class App extends Component<{
   }
 
   componentDidMount() {
-
-    //MatomoTracker.trackAppStart();
 
     this.openApp();
     // this.checkUnlock();
@@ -275,14 +272,15 @@ class App extends Component<{
 
   HomeTabs() {
     return (
-      <View/>
+      <View />
     );
   }
 
   render() {
     let progressView;
 
-   if (typeof this.state.progress === 'object') {
+    if (typeof this.state.progress === 'object') {
+      progressView = (
         <Progress.Circle progress={Math.round(this.state.progress.receivedBytes / this.state.progress.totalBytes)} color={'#FCE281'}
           unfilledColor={'#0E3747'}
           size={50}
@@ -292,6 +290,7 @@ class App extends Component<{
           borderWidth={0}
           thickness={4}
           style={{ alignSelf: 'center', marginTop: Platform.OS === 'android' ? 85 : 80 }} />
+      );
     }
 
     return (this.state.gotoMain && this.state.introLoaded) ?
@@ -327,28 +326,27 @@ class App extends Component<{
           end={{ x: 0, y: 0 }}
           style={{ flex: 1 }}
         >
-          <View style={{flex:1, marginTop:50}}><NoInternetUnion/></View>
-          <View style={{flex:1, justifyContent:'center'}}>
-            <NoInternet style={{alignSelf:'center'}} />
-            <Text style={{marginTop:30, alignSelf: 'center', textAlign: 'center', color: '#033254', fontFamily: 'Roboto-Bold', fontSize: 33 }}>MẤT KẾT NỐI</Text>
+          <View style={{ flex: 1, marginTop: 50 }}><NoInternetUnion /></View>
+          <View style={{ flex: 1, justifyContent: 'center' }}>
+            <NoInternet style={{ alignSelf: 'center' }} />
+            <Text style={{ marginTop: 30, alignSelf: 'center', textAlign: 'center', color: '#033254', fontFamily: 'Roboto-Bold', fontSize: 33 }}>MẤT KẾT NỐI</Text>
             <Text style={{ alignSelf: 'center', textAlign: 'center', color: '#606060', fontFamily: 'Roboto-Medium', fontSize: 16, marginTop: 16 }}>
               QUÝ KHÁCH VUI LÒNG KIỂM TRA LẠI {'\n'} ĐƯỜNG TRUYỀN CỦA MÌNH!
             </Text>
           </View>
-          <View style={{flex:1, marginTop:60}}><NoInternetUnion style={{alignSelf:'flex-end', marginRight:16, marginTop:40}}/></View>
+          <View style={{ flex: 1, marginTop: 60 }}><NoInternetUnion style={{ alignSelf: 'flex-end', marginRight: 16, marginTop: 40 }} /></View>
           <View style={{ height: 52, marginLeft: 16, marginRight: 16, position: 'absolute', bottom: 38, left: 0, right: 0 }}>
-              <TouchableOpacity onPress={this.sync}>
-                <LinearGradient
-                  colors={["#D62828", "#D62828"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={{ height: 52, borderRadius: 8 }}
-                >
-                  <Text style={{ alignSelf: 'center', marginTop: 16, color: '#fff', fontSize: 16, fontFamily: 'Roboto-Bold' }}>KẾT NỐI LẠI</Text>
-                </LinearGradient>
-
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity onPress={this.sync}>
+              <LinearGradient
+                colors={["#D62828", "#D62828"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={{ height: 52, borderRadius: 8 }}
+              >
+                <Text style={{ alignSelf: 'center', marginTop: 16, color: '#fff', fontSize: 16, fontFamily: 'Roboto-Bold' }}>KẾT NỐI LẠI</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
         </LinearGradient>
         :
         <LinearGradient
@@ -359,8 +357,8 @@ class App extends Component<{
 
           <StatusBar barStyle={'light-content'} hidden={Platform.OS === 'android' ? true : false} />
           <View style={{ flex: 1, alignContent: 'center', alignSelf: 'center' }}>
-            <Image source={require('../assets/images/logo-loading.png')} style={{ alignSelf: 'center', marginTop: this.isTV()?-300:100, width: Dimensions.get('screen').width, height: Dimensions.get('screen').width * 0.7 }} />
-            <Image source={require('../assets/images/logo-img.png')} style={{ position:'absolute',margin:'auto',top:Dimensions.get('screen').height/2 -100, left:Dimensions.get('screen').width/2 -125,  width: 250, height: 200 }} />
+            <Image source={require('../assets/images/logo-loading.png')} style={{ alignSelf: 'center', marginTop: this.isTV() ? -300 : 100, width: Dimensions.get('screen').width, height: Dimensions.get('screen').width * 0.7 }} />
+            <Image source={require('../assets/images/logo-img.png')} style={{ position: 'absolute', margin: 'auto', top: Dimensions.get('screen').height / 2 - 100, left: Dimensions.get('screen').width / 2 - 125, width: 250, height: 200 }} />
             {progressView}
           </View>
         </LinearGradient>

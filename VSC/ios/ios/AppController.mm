@@ -165,7 +165,7 @@ Application* app = nullptr;
 {
 //    return [CodePush bundleURL];
 #if DEBUG
-    return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
+    return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
 #else
     return [CodePush bundleURL];
 #endif
