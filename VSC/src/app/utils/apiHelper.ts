@@ -34,7 +34,7 @@ async function api_domain() {
 
     Config.URL_HOST_IMG1 = 'https://s1.' + Config.API_ENTRY_POINT.substring(8);
     Config.URL_HOST_IMG2 = 'https://s2.' + Config.API_ENTRY_POINT.substring(8);
-    Config.API_ENTRY_POINT = 'https://win79.gowithdev.net/';//'https://dev05.sin88.biz';
+    Config.API_ENTRY_POINT = 'https://preview.gowithdev.net/';//'https://dev05.sin88.biz';
   }
   //return Config.API_ENTRY_POINT + VERSION_API;
   return Config.API_ENTRY_POINT;
@@ -48,7 +48,7 @@ async function api_domain_new() {
 
     Config.URL_HOST_IMG1 = 'https://s1.' + Config.API_ENTRY_POINT.substring(8);
     Config.URL_HOST_IMG2 = 'https://s2.' + Config.API_ENTRY_POINT.substring(8);
-    Config.API_ENTRY_POINT = 'https://win79.gowithdev.net/';//'https://win79.gowithdev.net'
+    Config.API_ENTRY_POINT = 'https://preview.gowithdev.net/';//'https://win79.gowithdev.net'
   }
   return Config.API_ENTRY_POINT;
 }

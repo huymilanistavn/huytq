@@ -358,7 +358,8 @@ class App extends Component<{
           <StatusBar barStyle={'light-content'} hidden={Platform.OS === 'android' ? true : false} />
           <View style={{ flex: 1, alignContent: 'center', alignSelf: 'center' }}>
             <Image source={require('../assets/images/logo-loading.png')} style={{ alignSelf: 'center', marginTop: this.isTV() ? -300 : 100, width: Dimensions.get('screen').width, height: Dimensions.get('screen').width * 0.7 }} />
-            <Image source={require('../assets/images/logo-img.png')} style={{ position: 'absolute', margin: 'auto', top: Dimensions.get('screen').height / 2 - 100, left: Dimensions.get('screen').width / 2 - 125, width: 250, height: 200 }} />
+            {this.isTV() ? <Image source={require('../assets/images/logo-img.png')} style={{ position: 'absolute', margin: 'auto', top: Dimensions.get('screen').height / 2 - 100, left: Dimensions.get('screen').width / 2 - 125, width: 260, height: 210 }} />
+              : <Image source={require('../assets/images/logo-img.png')} style={{ position: 'absolute', margin: 'auto', top: Dimensions.get('screen').height / 2 - 100, left: Dimensions.get('screen').width / 2 - 65, width: 130, height: 105 }} />}
             {progressView}
           </View>
         </LinearGradient>

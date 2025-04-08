@@ -104,7 +104,7 @@ export default class LeftMenu extends React.Component<{
                         <Text numberOfLines={1} style={styles.itemText3}>Soi Kèo</Text>
                     </View>
                 </TouchableOpacity>
-                <Text style={{backgroundColor: '#080247', color: 'rgba(255, 187, 23, 1)', fontSize: 10, paddingLeft:16 }}>V 1.250324</Text>
+                <Text style={{backgroundColor: '#080247', color: 'rgba(255, 187, 23, 1)', fontSize: 10, paddingLeft:16 }}>V 1.250408</Text>
             </TouchableOpacity>
             </SafeAreaView>
         );
