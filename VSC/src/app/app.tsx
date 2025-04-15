@@ -243,7 +243,14 @@ class App extends Component<{
         this.setState({ syncMessage: "Update installed and will be applied on restart.", progress: false });
         break;
       case CodePush.SyncStatus.UNKNOWN_ERROR:
-        this.setState({ syncMessage: "An unknown error occurred.", progress: false, hasInternet: false });
+        g.api.hotmatchNews().then(res => {
+          if (res.data) {
+            this.setState({ progress: false, hasInternet: true, gotoMain: true });
+          }else{
+            this.setState({ syncMessage: "An unknown error occurred.", progress: false, hasInternet: false });
+          }
+        });
+
         break;
     }
   }
@@ -329,14 +336,17 @@ class App extends Component<{
           <View style={{ flex: 1, marginTop: 50 }}><NoInternetUnion /></View>
           <View style={{ flex: 1, justifyContent: 'center' }}>
             <NoInternet style={{ alignSelf: 'center' }} />
-            <Text style={{ marginTop: 30, alignSelf: 'center', textAlign: 'center', color: '#033254', fontFamily: 'Roboto-Bold', fontSize: 33 }}>MẤT KẾT NỐI</Text>
+            <Text style={{ marginTop: 30, alignSelf: 'center', textAlign: 'center', color: '#033254', fontFamily: 'Roboto-Bold', fontSize: 33 }}>KẾT NỐI KHÔNG ỔN ĐỊNH</Text>
             <Text style={{ alignSelf: 'center', textAlign: 'center', color: '#606060', fontFamily: 'Roboto-Medium', fontSize: 16, marginTop: 16 }}>
               QUÝ KHÁCH VUI LÒNG KIỂM TRA LẠI {'\n'} ĐƯỜNG TRUYỀN CỦA MÌNH!
             </Text>
           </View>
           <View style={{ flex: 1, marginTop: 60 }}><NoInternetUnion style={{ alignSelf: 'flex-end', marginRight: 16, marginTop: 40 }} /></View>
           <View style={{ height: 52, marginLeft: 16, marginRight: 16, position: 'absolute', bottom: 38, left: 0, right: 0 }}>
-            <TouchableOpacity onPress={this.sync}>
+            <TouchableOpacity onPress={
+              this.sync
+              //() => { this.setState({ gotoMain: true, hasInternet: true }) }
+            }>
               <LinearGradient
                 colors={["#D62828", "#D62828"]}
                 start={{ x: 0, y: 0 }}
