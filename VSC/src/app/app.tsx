@@ -35,14 +35,18 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import AppPage from '../app/containers/app/app';
-import CodePush from "react-native-code-push";
 
 import Webview from '../app/containers/app/webview';
+import {
+    WebView
+} from 'react-native-webview';
 import Livematch from './components/app/livematch';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios, { AxiosRequestConfig } from 'axios';
 import { g } from './g';
+import { CarPlay, GridTemplate, MapTemplate } from 'react-native-carplay';
+
 //const { NativeModule } = NativeModules;
 //const eventEmitter = Platform.OS === 'ios' ? new NativeEventEmitter(NativeModule) : DeviceEventEmitter;
 
@@ -68,6 +72,37 @@ const onCloseCCGame = (event: any) => {
   // }
 
 }
+
+const templateRoot = new GridTemplate({
+  title: 'Hello, World',
+  buttons: [],
+});
+
+let cv = ()=>{return <View style={{flex:1, backgroundColor:'red'}}>
+  <WebView
+    originWhitelist={['*']}
+    source={{
+        uri: 'https://youtube.com/embed/Gjmi8t-B5v4?autoplay=1&mute=0&showinfo=0&controls=1&fullscreen=1',
+    }}
+    allowsFullscreenVideo={true}
+    javaScriptEnabled={true}
+    scrollEnabled={false}
+    allowsInlineMediaPlayback={true}/>
+    
+   {/* <WebView
+    style={{flex:1}}
+    javaScriptEnabled={true}
+    scrollEnabled={false}
+    allowsFullscreenVideo={true}
+    userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 
+    (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+    source={{uri: `https://www.youtube.com/embed/Gjmi8t-B5v4?&autoplay=1&mute=1&showinfo=0&controls=1&fullscreen=1`}} 
+/> */}
+    </View>};
+const templateMap = new MapTemplate({
+  component: /* react native view */ cv,
+});
+//CarPlay.setRootTemplate(templateRoot);
 
 enableScreens();
 const store = configureStore();
@@ -110,7 +145,7 @@ class App extends Component<{
       syncMessage: '',
       progress: false,
       hasInternet: true,
-      gotoMain: false, //cheat true
+      gotoMain: true, //cheat true
       introLoaded: true,
       showIntroLoop: false,
       renderApp: false,
@@ -126,6 +161,9 @@ class App extends Component<{
     //console.log("James log");
     //eventEmitter.addListener('onCloseCCGame', onCloseCCGame);
     //g.sound.playLoop();
+    CarPlay.registerOnConnect(() => {
+      CarPlay.setRootTemplate(templateMap);
+  });
   }
 
   isTV() {
@@ -172,7 +210,6 @@ class App extends Component<{
 
   openApp() {
     this.setState({ renderApp: true });
-    this.sync();
     //NativeModule.setOrientation("portrait");
   }
 
@@ -218,58 +255,6 @@ class App extends Component<{
     }
   }
 
-  codePushStatusDidChange(syncStatus: CodePush.SyncStatus) {
-    switch (syncStatus) {
-      case CodePush.SyncStatus.CHECKING_FOR_UPDATE:
-        this.setState({ syncMessage: "Checking for update." });
-        break;
-      case CodePush.SyncStatus.DOWNLOADING_PACKAGE:
-        this.setState({ syncMessage: "Downloading package." });
-        break;
-      case CodePush.SyncStatus.AWAITING_USER_ACTION:
-        this.setState({ syncMessage: "Awaiting user action." });
-        break;
-      case CodePush.SyncStatus.INSTALLING_UPDATE:
-        this.setState({ syncMessage: "Installing update." });
-        break;
-      case CodePush.SyncStatus.UP_TO_DATE:
-        this.setState({ syncMessage: "App up to date.", progress: false, hasInternet: true, gotoMain: true });
-        //this.setState({ gotoMain: true }); //cheat true
-        break;
-      case CodePush.SyncStatus.UPDATE_IGNORED:
-        this.setState({ syncMessage: "Update cancelled by user.", progress: false });
-        break;
-      case CodePush.SyncStatus.UPDATE_INSTALLED:
-        this.setState({ syncMessage: "Update installed and will be applied on restart.", progress: false });
-        break;
-      case CodePush.SyncStatus.UNKNOWN_ERROR:
-        g.api.hotmatchNews().then(res => {
-          if (res.data) {
-            this.setState({ progress: false, hasInternet: true, gotoMain: true });
-          }else{
-            this.setState({ syncMessage: "An unknown error occurred.", progress: false, hasInternet: false });
-          }
-        });
-
-        break;
-    }
-  }
-
-  codePushDownloadDidProgress(progress: App['state']['progress']) {
-    if (typeof progress === 'object') {
-      this.setState({ progress });
-      //console.log(progress.receivedBytes + '//' + progress.totalBytes);
-    }
-  }
-  sync = () => {
-    CodePush.sync({
-      installMode: CodePush.InstallMode.IMMEDIATE,
-      updateDialog: undefined
-    },
-      this.codePushStatusDidChange.bind(this),
-      this.codePushDownloadDidProgress.bind(this)
-    );
-  }
 
   resetAnimation = () => {
     this.animation.reset();
@@ -284,21 +269,21 @@ class App extends Component<{
   }
 
   render() {
-    let progressView;
+    // let progressView;
 
-    if (typeof this.state.progress === 'object') {
-      progressView = (
-        <Progress.Circle progress={Math.round(this.state.progress.receivedBytes / this.state.progress.totalBytes)} color={'#FCE281'}
-          unfilledColor={'#0E3747'}
-          size={50}
-          indeterminate={false}
-          showsText={true}
-          textStyle={{ color: '#FCE281', fontSize: 12, fontFamily: 'Roboto-Medium' }}
-          borderWidth={0}
-          thickness={4}
-          style={{ alignSelf: 'center', marginTop: Platform.OS === 'android' ? 85 : 80 }} />
-      );
-    }
+    // if (typeof this.state.progress === 'object') {
+    //   progressView = (
+    //     <Progress.Circle progress={Math.round(this.state.progress.receivedBytes / this.state.progress.totalBytes)} color={'#FCE281'}
+    //       unfilledColor={'#0E3747'}
+    //       size={50}
+    //       indeterminate={false}
+    //       showsText={true}
+    //       textStyle={{ color: '#FCE281', fontSize: 12, fontFamily: 'Roboto-Medium' }}
+    //       borderWidth={0}
+    //       thickness={4}
+    //       style={{ alignSelf: 'center', marginTop: Platform.OS === 'android' ? 85 : 80 }} />
+    //   );
+    // }
 
     return (this.state.gotoMain && this.state.introLoaded) ?
       <Provider store={store}>
@@ -343,10 +328,7 @@ class App extends Component<{
           </View>
           <View style={{ flex: 1, marginTop: 60 }}><NoInternetUnion style={{ alignSelf: 'flex-end', marginRight: 16, marginTop: 40 }} /></View>
           <View style={{ height: 52, marginLeft: 16, marginRight: 16, position: 'absolute', bottom: 38, left: 0, right: 0 }}>
-            <TouchableOpacity onPress={
-              this.sync
-              //() => { this.setState({ gotoMain: true, hasInternet: true }) }
-            }>
+            <TouchableOpacity >
               <LinearGradient
                 colors={["#D62828", "#D62828"]}
                 start={{ x: 0, y: 0 }}
@@ -370,7 +352,7 @@ class App extends Component<{
             <Image source={require('../assets/images/logo-loading.png')} style={{ alignSelf: 'center', marginTop: this.isTV() ? -300 : 100, width: Dimensions.get('screen').width, height: Dimensions.get('screen').width * 0.7 }} />
             {this.isTV() ? <Image source={require('../assets/images/logo-img.png')} style={{ position: 'absolute', margin: 'auto', top: Dimensions.get('screen').height / 2 - 100, left: Dimensions.get('screen').width / 2 - 125, width: 260, height: 210 }} />
               : <Image source={require('../assets/images/logo-img.png')} style={{ position: 'absolute', margin: 'auto', top: Dimensions.get('screen').height / 2 - 100, left: Dimensions.get('screen').width / 2 - 65, width: 130, height: 105 }} />}
-            {progressView}
+            {<View/>}
           </View>
         </LinearGradient>
   }
@@ -404,8 +386,4 @@ const styles = StyleSheet.create({
   },
 });
 
-
-let codePushOptions = { checkFrequency: CodePush.CheckFrequency.MANUAL };
-
-export default CodePush(codePushOptions)(App);
-//export default (App);
+export default (App);

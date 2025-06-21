@@ -7,7 +7,6 @@ import { Platform } from 'react-native';
 import { g } from '../../g'
 import { Alert } from 'react-native';
 import moment from 'moment';
-import CodePush from 'react-native-code-push';
 export function* resetCommon(action: any) {
   try {
   } catch (error) { }
@@ -171,7 +170,7 @@ export function* refresh(action: any) {
     //console.log('REFRESH responseresponse 111 ------------->', JSON.stringify(error));
     if (error?.message == 'Network Error') {
       //cheat force restart app
-      //CodePush.restartApp();
+
     } else {
       action.navigation.navigate('Home');
       if ((error?.message == 'Request failed with status code 401')

@@ -58,6 +58,7 @@
 		51BCDD3126A2CC5F003D46AD /* RootNavigationController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 51BCDD3026A2CC5F003D46AD /* RootNavigationController.mm */; };
 		51BCDD3226A2CC5F003D46AD /* RootNavigationController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 51BCDD3026A2CC5F003D46AD /* RootNavigationController.mm */; };
 		5E8808A1F93F423098F5B144 /* Roboto-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3017BB6CFF7A4E18997E7DAD /* Roboto-BoldItalic.ttf */; };
+		69B61C02D9BA45C9B143AA3E /* libPods-VSC-mobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D82EFA00FEA405A8D214678 /* libPods-VSC-mobile.a */; };
 		6E0A1B6B6D10402784AB8D14 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A7FD995D1A7A42A5B9D600B3 /* Roboto-Black.ttf */; };
 		8D3732DF3CEF40908BEE9164 /* Roboto-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4B90D3142053418F8E1168DD /* Roboto-BlackItalic.ttf */; };
 		8E0EE4956E5F4F0A9C41B369 /* Roboto-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CE96DC8F46D4289B9F4F825 /* Roboto-MediumItalic.ttf */; };
@@ -80,7 +81,6 @@
 		BA3A85EC1A724AE900924D24 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA3A85EB1A724AE900924D24 /* Security.framework */; };
 		BAEE4D841AC40C11003BEB0F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAEE4D831AC40C11003BEB0F /* Security.framework */; };
 		C06E23CC18CEFE680093C81A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C06E23CB18CEFE680093C81A /* main.cpp */; };
-		CDECDDC2F749A3E1945E33E2 /* libPods-VSC-mobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0CD2C06BB84A70FDC647A295 /* libPods-VSC-mobile.a */; };
 		D454520C156E22BD00887EB5 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D454520B156E22BD00887EB5 /* libz.dylib */; };
 		D4545227156E28EF00887EB5 /* AppDelegate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4545215156E28EF00887EB5 /* AppDelegate.cpp */; };
 		D6B061241803AB9F0077942B /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6B061231803AB9F0077942B /* CoreMotion.framework */; };
@@ -126,7 +126,6 @@
 		051C017521E2F91200D4A347 /* UserConfigIOS.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = UserConfigIOS.release.xcconfig; path = ios/UserConfigIOS.release.xcconfig; sourceTree = "<group>"; };
 		051C017821E2F92300D4A347 /* UserConfigMac.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = UserConfigMac.release.xcconfig; sourceTree = "<group>"; };
 		051C017921E2F92300D4A347 /* UserConfigMac.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = UserConfigMac.debug.xcconfig; sourceTree = "<group>"; };
-		0CD2C06BB84A70FDC647A295 /* libPods-VSC-mobile.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VSC-mobile.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0CFD8A23FD4C45279F0E560B /* Roboto-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Italic.ttf"; path = "../src/assets/fonts/Roboto-Italic.ttf"; sourceTree = "<group>"; };
 		1222F771B4854E0C900E200F /* Roboto-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-LightItalic.ttf"; path = "../src/assets/fonts/Roboto-LightItalic.ttf"; sourceTree = "<group>"; };
 		1A37E9D3200DEEF40078AF72 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS11.2.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
@@ -156,6 +155,7 @@
 		467AF60D232881B100770112 /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/AVKit.framework; sourceTree = DEVELOPER_DIR; };
 		467AF60F232881BA00770112 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/CoreMedia.framework; sourceTree = DEVELOPER_DIR; };
 		46A6872E2F314EF39A80C4A6 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Thin.ttf"; path = "../src/assets/fonts/Roboto-Thin.ttf"; sourceTree = "<group>"; };
+		4B5393F7FCD880AE93A94067 /* Pods-VSC-mobile.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VSC-mobile.release.xcconfig"; path = "Target Support Files/Pods-VSC-mobile/Pods-VSC-mobile.release.xcconfig"; sourceTree = "<group>"; };
 		4B90D3142053418F8E1168DD /* Roboto-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-BlackItalic.ttf"; path = "../src/assets/fonts/Roboto-BlackItalic.ttf"; sourceTree = "<group>"; };
 		4C4FD5E11C084A0BA3948D0E /* Roboto-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Light.ttf"; path = "../src/assets/fonts/Roboto-Light.ttf"; sourceTree = "<group>"; };
 		4D3EB2571F8F4A6C007DA644 /* jsb_module_register.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jsb_module_register.cpp; sourceTree = "<group>"; };
@@ -178,16 +178,16 @@
 		509D4AEA17EBB82600697056 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		5107693026B00FA000B4A91F /* RNViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RNViewController.h; path = ios/RNViewController.h; sourceTree = "<group>"; };
 		5107693126B00FA000B4A91F /* RNViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = RNViewController.mm; path = ios/RNViewController.mm; sourceTree = "<group>"; };
-		51730FA683F1374D17202DD6 /* Pods-VSC-mobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VSC-mobile.debug.xcconfig"; path = "Target Support Files/Pods-VSC-mobile/Pods-VSC-mobile.debug.xcconfig"; sourceTree = "<group>"; };
 		5177FDE1273671C800C95C1C /* bubbleburst */ = {isa = PBXFileReference; lastKnownFileType = folder; name = bubbleburst; path = ../fakegames/bubbleburst; sourceTree = "<group>"; };
 		51A67F28269589B0000E09E3 /* RCTNativeModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTNativeModule.m; path = ios/RCTNativeModule.m; sourceTree = "<group>"; };
 		51A67F2B269589B0000E09E3 /* RCTNativeModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTNativeModule.h; path = ios/RCTNativeModule.h; sourceTree = "<group>"; };
 		51BCDD2F26A2CC5F003D46AD /* RootNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RootNavigationController.h; path = ios/RootNavigationController.h; sourceTree = "<group>"; };
 		51BCDD3026A2CC5F003D46AD /* RootNavigationController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RootNavigationController.mm; path = ios/RootNavigationController.mm; sourceTree = "<group>"; };
+		5C8E74819DC5BDDB457E6069 /* Pods-VSC-mobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VSC-mobile.debug.xcconfig"; path = "Target Support Files/Pods-VSC-mobile/Pods-VSC-mobile.debug.xcconfig"; sourceTree = "<group>"; };
 		5CC80B56179043AC8726A44C /* Roboto-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Medium.ttf"; path = "../src/assets/fonts/Roboto-Medium.ttf"; sourceTree = "<group>"; };
+		6D82EFA00FEA405A8D214678 /* libPods-VSC-mobile.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VSC-mobile.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		70187CD62E0548A80069DAB2 /* Entitlements.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 		759E6FD89FA14AC992C850CD /* Roboto-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Bold.ttf"; path = "../src/assets/fonts/Roboto-Bold.ttf"; sourceTree = "<group>"; };
-		7938259AB0739075114368FA /* Pods-SinApp-mobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SinApp-mobile.debug.xcconfig"; path = "Target Support Files/Pods-SinApp-mobile/Pods-SinApp-mobile.debug.xcconfig"; sourceTree = "<group>"; };
-		9ED721995B6C66AAE13DEEF7 /* Pods-VSC-mobile.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VSC-mobile.release.xcconfig"; path = "Target Support Files/Pods-VSC-mobile/Pods-VSC-mobile.release.xcconfig"; sourceTree = "<group>"; };
 		A7FD995D1A7A42A5B9D600B3 /* Roboto-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Black.ttf"; path = "../src/assets/fonts/Roboto-Black.ttf"; sourceTree = "<group>"; };
 		A922753D1517C094001B78AA /* VSC-mobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VSC-mobile.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A92275411517C094001B78AA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -213,7 +213,6 @@
 		D4545215156E28EF00887EB5 /* AppDelegate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppDelegate.cpp; sourceTree = "<group>"; };
 		D4545216156E28EF00887EB5 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		D6B061231803AB9F0077942B /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/CoreMotion.framework; sourceTree = DEVELOPER_DIR; };
-		F5424205D21EAE47A4CF2DBE /* Pods-SinApp-mobile.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SinApp-mobile.release.xcconfig"; path = "Target Support Files/Pods-SinApp-mobile/Pods-SinApp-mobile.release.xcconfig"; sourceTree = "<group>"; };
 		FA676C751C71AFA200E091E3 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libiconv.dylib; sourceTree = DEVELOPER_DIR; };
 		FA676C771C71AFAB00E091E3 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -276,7 +275,7 @@
 				A922754C1517C094001B78AA /* UIKit.framework in Frameworks */,
 				A922754E1517C094001B78AA /* Foundation.framework in Frameworks */,
 				A92275501517C094001B78AA /* CoreGraphics.framework in Frameworks */,
-				CDECDDC2F749A3E1945E33E2 /* libPods-VSC-mobile.a in Frameworks */,
+				69B61C02D9BA45C9B143AA3E /* libPods-VSC-mobile.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,6 +338,7 @@
 		A92275321517C094001B78AA = {
 			isa = PBXGroup;
 			children = (
+				70187CD62E0548A80069DAB2 /* Entitlements.plist */,
 				1AC6FB34180E9ACB004C840B /* cocos2d_libs.xcodeproj */,
 				D4545214156E28EF00887EB5 /* Classes */,
 				A92275401517C094001B78AA /* Frameworks */,
@@ -402,7 +402,7 @@
 				A922754B1517C094001B78AA /* UIKit.framework */,
 				A922754D1517C094001B78AA /* Foundation.framework */,
 				A922754F1517C094001B78AA /* CoreGraphics.framework */,
-				0CD2C06BB84A70FDC647A295 /* libPods-VSC-mobile.a */,
+				6D82EFA00FEA405A8D214678 /* libPods-VSC-mobile.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -410,10 +410,8 @@
 		B8EB1E7E9F34EF4CC4A39775 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				7938259AB0739075114368FA /* Pods-SinApp-mobile.debug.xcconfig */,
-				F5424205D21EAE47A4CF2DBE /* Pods-SinApp-mobile.release.xcconfig */,
-				51730FA683F1374D17202DD6 /* Pods-VSC-mobile.debug.xcconfig */,
-				9ED721995B6C66AAE13DEEF7 /* Pods-VSC-mobile.release.xcconfig */,
+				5C8E74819DC5BDDB457E6069 /* Pods-VSC-mobile.debug.xcconfig */,
+				4B5393F7FCD880AE93A94067 /* Pods-VSC-mobile.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -482,13 +480,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A92277001517C097001B78AA /* Build configuration list for PBXNativeTarget "VSC-mobile" */;
 			buildPhases = (
-				6AAB86BCD1AD6122ECCBA9A2 /* [CP] Check Pods Manifest.lock */,
+				4AE03250D76BF0F552A92CBB /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				A92275391517C094001B78AA /* Sources */,
 				A922753A1517C094001B78AA /* Frameworks */,
 				A922753B1517C094001B78AA /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				4EAE8D0E54D8F321B9DC9A5D /* [CP] Copy Pods Resources */,
+				FFF12448518135E0A0BC2C44 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -512,9 +510,9 @@
 						LastSwiftMigration = 1250;
 					};
 					A922753C1517C094001B78AA = {
-						DevelopmentTeam = D8UXV36HSM;
+						DevelopmentTeam = 9WJ8U82U57;
 						LastSwiftMigration = 1250;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -615,25 +613,7 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
-		4EAE8D0E54D8F321B9DC9A5D /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-VSC-mobile/Pods-VSC-mobile-resources.sh",
-				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-VSC-mobile/Pods-VSC-mobile-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6AAB86BCD1AD6122ECCBA9A2 /* [CP] Check Pods Manifest.lock */ = {
+		4AE03250D76BF0F552A92CBB /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -653,6 +633,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -671,6 +652,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\nif [ \"${CONFIGURATION}\" == \"Debug\" ] ; then\n  export SKIP_BUNDLING=true\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		FFF12448518135E0A0BC2C44 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-VSC-mobile/Pods-VSC-mobile-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-VSC-mobile/Pods-VSC-mobile-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -874,10 +873,11 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMPRESS_PNG_FILES = NO;
-				DEVELOPMENT_TEAM = D8UXV36HSM;
+				DEVELOPMENT_TEAM = 9WJ8U82U57;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -892,7 +892,7 @@
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = ios/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = VSC;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/../cocos2d-x/external/ios/libs",
@@ -905,7 +905,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = g1.app.vsc;
 				PRODUCT_NAME = "VSC-mobile";
-				PROVISIONING_PROFILE_SPECIFIER = g1_app_sin_dev;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				STRIP_PNG_TEXT = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "SinApp-mobile-Bridging-Header.h";
@@ -924,10 +924,11 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMPRESS_PNG_FILES = NO;
-				DEVELOPMENT_TEAM = D8UXV36HSM;
+				DEVELOPMENT_TEAM = 9WJ8U82U57;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -941,7 +942,7 @@
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = ios/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = VSC;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/../cocos2d-x/external/ios/libs",
@@ -955,7 +956,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = g1.app.vsc;
 				PRODUCT_NAME = "VSC-mobile";
-				PROVISIONING_PROFILE_SPECIFIER = g1_app_sin_dis;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				STRIP_PNG_TEXT = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "SinApp-mobile-Bridging-Header.h";

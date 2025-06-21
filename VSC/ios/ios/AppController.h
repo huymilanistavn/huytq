@@ -25,11 +25,12 @@
  ****************************************************************************/
 #import <React/RCTBridgeDelegate.h>
 #import <UIKit/UIKit.h>
+#import <CarPlay/CarPlay.h>
 
 @class CCViewController;
 @class RootNavigationController;
 
-@interface AppController : UIResponder <UIApplicationDelegate, RCTBridgeDelegate>
+@interface AppController : UIResponder <UIApplicationDelegate, RCTBridgeDelegate, CPApplicationDelegate>
 {
 }
 

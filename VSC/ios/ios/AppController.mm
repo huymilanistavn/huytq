@@ -36,7 +36,8 @@
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
-#import <CodePush/CodePush.h>
+//#import <CodePush/CodePush.h>
+#import <RNCarPlay.h>
 #include "audio/include/AudioEngine.h"
 
 #ifdef FB_SONARKIT_ENABLED
@@ -163,12 +164,7 @@ Application* app = nullptr;
 #pragma mark Custom Methods
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
-//    return [CodePush bundleURL];
-#if DEBUG
-    return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
-#else
-    return [CodePush bundleURL];
-#endif
+return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
 }
 
 -(void) openCCGame:(NSString *)gameDir : (NSString*) orientation : (NSString*) userToken : (NSString*) refreshToken : (BOOL) enableMusic : (BOOL) enableSound {
@@ -332,6 +328,14 @@ void closeCCGame()
     NSString *ns_user_fx_sound = [NSString stringWithCString:user_fx_sound.c_str() encoding:[NSString defaultCStringEncoding]];
     
     [[RCTNativeModule getInstance] sendEvent:onCloseCCGameEventName:@{@"user_bg_music": ns_user_bg_music, @"user_fx_sound": ns_user_fx_sound}];
+}
+
+- (void)application:(UIApplication *)application didConnectCarInterfaceController:(CPInterfaceController *)interfaceController toWindow:(CPWindow *)window {
+  [RNCarPlay connectWithInterfaceController:interfaceController window:window];
+}
+
+- (void)application:(nonnull UIApplication *)application didDisconnectCarInterfaceController:(nonnull CPInterfaceController *)interfaceController fromWindow:(nonnull CPWindow *)window {
+  [RNCarPlay disconnect];
 }
 
 @end

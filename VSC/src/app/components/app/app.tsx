@@ -25,8 +25,7 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 import HomeLodeCalendarPicker from "../commons/homelodecalendarpicker";
 import MenuDrawer from 'react-native-side-drawer';
 import WithComponentHooks from "with-component-hooks";
-
-
+import { CarPlay } from 'react-native-carplay';
 //import GlobalKeyEvent from 'react-native-global-keyevent';
 
 
@@ -36,6 +35,7 @@ LogBox.ignoreLogs([
 
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
+
 
 class App extends React.Component<{
   navigation: g.NavigationStackProp,
@@ -96,6 +96,7 @@ class App extends React.Component<{
   _flatlist: any;
 
   componentDidMount() {
+    console.log("acmilan-"+CarPlay.connected);
     // call refresh to check islogin connection server
     this._isMounted = true;
     this.callAllMatch();
